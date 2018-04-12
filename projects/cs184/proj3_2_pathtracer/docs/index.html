@@ -223,7 +223,7 @@
         </div>
 
     <h2 align="middle">Part 5: GLSL Shading</h2>
-        <p>Refer to <a href="https://cs184sp18.github.io/proj3_2-pathtracer-brianjho/gl/index.html">this link</a> to see gl in the works (my gl page)!</p>
+        <p>Refer to <a href="https://brianjho.github.io/projects/cs184/proj3_2_pathtracer/docs/gl/index.html">this link</a> to see gl in the works (my gl page)!</p>
         <p>This part of the project was quite different from the previous parts. I used GLSL, a C-ish programming language to compute shading on objects. This allows for an accelerated render compared to the previous parts which took more than a couple minutes to render (GLSL computes in parallel on the GPU, a Graphics Processing Unit designated for creating images quickly). We perform shading on vertices and fragments by computing the color of each individual piece (whether it be a vertex or a fragment).</p>
         <p>With the accelerated shader program, I was able to implement Blinn-Phong Shading, which is a technique that takes three different shading models - ambient shading (lighting), diffuse shading (reflection), and specular shading (highlights) - and combines them to create a reflection model. This allows us to generate an image that is less computationally-expensive, while still maintaining decent shading overall.</p>
 
