@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+    div.padded {
+      padding-top: 0px;
+      padding-right: 100px;
+      padding-bottom: 0.25in;
+      padding-left: 100px;
+    }
+  </style>
+<title>Brian Ho  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="icon" href="part1/CBdragon.png">
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 3-2: PathTracer</h1>
+    <h2 align="middle">Brian Ho</h2>
+
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                <img src="part1/CBdragon.png" width="480px" />
+                <td align="middle">
+                <img src="part5/woah2.png" width="480px" />
+            </tr>
+        </table>
+    </div>
+
+    <div class="padded">
+        <p>In this project, I continued where I left off with ray tracing in the previous project. I implemented new BSDF materials such as mirror and glass (calculating reflection and refraction), as well as surfaces with microfacets such as copper and gold. I implemented ways to use environment maps and infinite environment lights in part 3, which is useful when not having a background in your rendering scene. I also created a depth of field simulator that would focus on certain parts of the image given a specified lens radius and focal distance. In the last part, I used a shader program, GLSL, to speed up rendering and learned how to calculate different shading methods relying on vertex and fragment shaders. This was a very extensive project, and even though it was difficult to figure out what to do in each part, I am very satisfied with my end results and can confidently say I have a very decent rendering machine.</p>
+
+    <h2 align="middle">Part 1: Mirror and Glass Materials</h2>
+        <p>In the first part of the project, I made functions that allowed for reflection and refraction on surfaces, which is used for the mirror and glass material. The following images show the process of rays bouncing through the scene of CBspheres.dae, starting from 0 bounces and going to 100 bounces.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part1/spheresM0.png" width="480px" />
+                    <figcaption align="middle">0 bounce. We can only see the light source.</figcaption>
+                    <td align="middle">
+                    <img src="part1/spheresM1.png" width="480px" />
+                    <figcaption align="middle">1 bounce. The light bounces off of the walls and the ceiling is black.</figcaption>
+                </tr>
+                </br>
+                <tr>
+                    <td align="middle">
+                    <img src="part1/spheresM2.png" width="480px" />
+                    <figcaption align="middle">2 bounce. We can see a reflection in the mirror sphere as well as a little bit of reflection in the glass sphere. The ceiling in the reflection of the mirror sphere, as well as the reflection of the other sphere, is black.</figcaption>
+                    <td align="middle">
+                    <img src="part1/spheresM3.png" width="480px" />
+                    <figcaption align="middle">3 bounce. There is now visible refraction in the glass sphere. The mirror sphere now has light in its ceiling reflection but has the reflection of the last bounce of the other sphere. The ceiling in the refraction sphere is black.</figcaption>
+                </tr>
+                </br>
+                <tr>
+                    <td align="middle">
+                    <img src="part1/spheresM4.png" width="480px" />
+                    <figcaption align="middle">4 bounce. The ceiling inside the refracting sphere is no longer black, and now we see a shiny light under the glass sphere (where the shadow is). The mirror sphere has the reflection of the refracting glass sphere now.</figcaption>
+                    <td align="middle">
+                    <img src="part1/spheresM5.png" width="480px" />
+                    <figcaption align="middle">5 bounce. The new light under the sphere can be seen slightly onto the right blue wall as another extra light.</figcaption>
+                </tr>
+                </br>
+                <tr>
+                    <td align="middle">
+                    <img src="part1/spheresM100.png" width="480px" />
+                    <figcaption align="middle">100 bounce. The image has gotten brighter because of the light from both mirror and glass materials reflecting and refracting light across the scene.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+
+    <h2 align="middle">Part 2: Microfacet Material</h2>
+        <p>In part 2, I implemented the microfacet model, which is basically a texture for the material that determines how smooth or rough the surface is, which in turn determines how much light is reflected and spread out over a certain area of the model. I also had to implement functions that would compute the Fresnel term, Shadow-Masking term, and the Normal Distribution Function in order to piece together the specific microfacet BRDF.</p>
+        <p>With the following section, I tested on CB_dragon_microfacet_au.dae with various alpha values to see the amount of reflection that varied between the different values. A high alpha rate (0.5) represents a more diffuse material, meaning that it is rougher and the light spreads around the surface more. A low alpha rate (0.005) would represent a glossy material, appearing much more smooth and reflective on the model's surroundings. In between, we see a mixture of both, where the image is still slightly fuzzy while having some reflectance.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part2/dragon05.png" width="480px" />
+                    <figcaption align="middle">Gold dragon with alpha = 0.5. Shininess is spread out and dispersed.</figcaption>
+                    <td align="middle">
+                    <img src="part2/dragon025.png" width="480px" />
+                    <figcaption align="middle">Gold dragon with alpha = 0.25. Certain spots are shinier than others.</figcaption>
+                </tr>
+                </br>
+                <tr>
+                    <td align="middle">
+                    <img src="part2/dragon005.png" width="480px" />
+                    <figcaption align="middle">Gold dragon with alpha = 0.05. Pretty reflective but still a little rough.</figcaption>
+                    <td align="middle">
+                    <img src="part2/dragon0005.png" width="480px" />
+                    <figcaption align="middle">Gold dragon with alpha = 0.005. Very shiny and reflective.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>The two images below are renderings of the copper bunny using two different techniques: cosine hemisphere sampling and importance sampling. The default code given beforehand was cosine hemisphere sampling, which is more inefficient because the scene requires a lot more samples before it converges. I compare the two using the same constraints - 64 samples per pixel, 1 sample per light, and a maximum of 5 bounces. We see that my implemented importance sampling method renders a picture with a better defined material than the rendering using basic cosine hemisphere sampling.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part2/bunnyCosine.png" width="480px" />
+                    <figcaption align="middle">Copper bunny rendered using cosine hemisphere sampling (default).</figcaption>
+                    <td align="middle">
+                    <img src="part2/bunnyImportant.png" width="480px" />
+                    <figcaption align="middle">Copper bunny rendered using importance sampling (implemented).</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>I altered the CBbunny dae file to produce a bunny that was made out of the material Carbon as well as a bunny made out of the material Sodium. I used the website <a href="https://refractiveindex.info">refractiveindex.info</a> in order to find the eta and k values of the material at specific wavelengths 614 nm (red), 549 nm (green), and 466 nm (blue).</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part2/bunnyCarbon.png" width="480px" />
+                    <figcaption align="middle">Carbon bunny w/ eta values (2.4124, 2.4228, 2.4346) and k values (0.0, 0.0, 0.0), for the rgb wavelengths.</figcaption>
+                    <td align="middle">
+                    <img src="part2/bunnySodium.png" width="480px" />
+                    <figcaption align="middle">Sodium bunny w/ eta values (0.044640, 0.052140, 0.072322) and k values (2.5920, 2.2820, 1.8311), for the rgb wavelengths.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+
+    <h2 align="middle">Part 3: Environment Light</h2>
+        <p>In this section, I created functions that would accomodate for scenes that had no light source. Because of this, the new type of light source that would make up the scene is an infinite environment light. We use this environment map only when there is no intersection in the scene with the ray (no walls to hit basically) and if there actually does exist an environment map for us to use. I implemented both uniform sampling and importance sampling techniques to render the environment map lights.</p>
+        <p>The environment map I am using is field.exr (see below for picture of field).</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part3/field.jpg" width="880px" />
+                    <figcaption align="middle">Jpeg file of field.exr.</figcaption>
+                    <td align="middle">
+                </tr>
+                <tr>
+                    <td align="middle">
+                    <img src="part3/probability_debug.png" width="880px" />
+                    <figcaption align="middle">probability_debug.png for field.exr</figcaption>
+                    <td align="middle">
+                </tr>
+            </table>
+        </div>
+
+        <p>Comparing bunny_unlit.dae uniform sampling versus importance sampling. The render with uniform sampling appears to be more grainy, and the render with importance sampling has a better defined shadow. This was done with 4 samples per pixel, 64 samples per light, and a max ray depth of 5.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part3/bunny_unlit_uniform.png" width="480px" />
+                    <figcaption align="middle">Unlit bunny (uniform sampling).</figcaption>
+                    <td align="middle">
+                    <img src="part3/bunny_unlit_importance.png" width="480px" />
+                    <figcaption align="middle">Unlit bunny (importance sampling).</figcaption>
+                </tr>
+            </table>
+        </div>
+
+        <p>Comparing bunny_microfacet_cu_unlit.dae uniform sampling versus importance sampling. Similar to the normal unlit file, the render with uniform sampling appears to be more grainy with a less defined shadow. This was done with 4 samples per pixel, 64 samples per light, and a max ray depth of 5.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part3/bunny_microfacet_cu_unlit_uniform.png" width="480px" />
+                    <figcaption align="middle">Unlit copper microfacet bunny (uniform).</figcaption>
+                    <td align="middle">
+                    <img src="part3/bunny_microfacet_cu_unlit_importance.png" width="480px" />
+                    <figcaption align="middle">Unlit copper microfacet bunny (importance sampling).</figcaption>
+                </tr>
+            </table>
+        </div>
+
+        <p>One last note for my part 3 - it may seem like the fields for uniform sampling look darker than the fields for importance sampling, but I assure you that is not the case (it is an optical illusion)! If you place the images back to back, for instance having both images in separate tabs and switching between them, you would be able to tell that the fields are the same.</p>
+    <h2 align="middle">Part 4: Depth of Field</h2>
+        <p>Before implementing this part, my images were clear in focus no matter how far or close the object was, which represented a pin-hole camera model. In this part, I simulated a depth of field as if I were generating rays through a thin lens. This essentially makes objects look more focused only if they are on the plane of focus, which is determined by a specified lens radius and focal distance.</p>
+
+        <p>These four images are a "focus stack" of the dragon microfacet BSDF, which is just the same scene but focused at different depths of the scene. This was done with 64 samples per pixel, 4 samples per light, and a max ray depth of 8. The aperture size was left at a constant 0.0883883.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part4/dragon17.png" width="480px" />
+                    <figcaption align="middle">Dragon with depth 1.7.</figcaption>
+                    <td align="middle">
+                    <img src="part4/dragon20.png" width="480px" />
+                    <figcaption align="middle">Dragon with depth 2.0.</figcaption>
+                </tr>
+                </br>
+                <tr>
+                    <td align="middle">
+                    <img src="part4/dragon23.png" width="480px" />
+                    <figcaption align="middle">Dragon with depth 2.3.</figcaption>
+                    <td align="middle">
+                    <img src="part4/dragon26.png" width="480px" />
+                    <figcaption align="middle">Dragon with depth 2.6.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+        <p>These four images are of the dragon microfacet BSDF, focused at the same depth, but with different aperture sizes. This was done with 64 samples per pixel, 4 samples per light, and a max ray depth of 8. The depth was left at a constant 1.7. It appears that a smaller aperture size correlated with a larger depth of field.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part4/dragon001.png" width="480px" />
+                    <figcaption align="middle">Dragon with aperture size of 0.01.</figcaption>
+                    <td align="middle">
+                    <img src="part4/dragon004.png" width="480px" />
+                    <figcaption align="middle">Dragon with aperture size of 0.04.</figcaption>
+                </tr>
+                </br>
+                <tr>
+                    <td align="middle">
+                    <img src="part4/dragon009.png" width="480px" />
+                    <figcaption align="middle">Dragon with aperture size of 0.09.</figcaption>
+                    <td align="middle">
+                    <img src="part4/dragon014.png" width="480px" />
+                    <figcaption align="middle">Dragon with aperture size of 0.14.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 5: GLSL Shading</h2>
+        <p>Refer to <a href="https://cs184sp18.github.io/proj3_2-pathtracer-brianjho/gl/index.html">this link</a> to see gl in the works (my gl page)!</p>
+        <p>This part of the project was quite different from the previous parts. I used GLSL, a C-ish programming language to compute shading on objects. This allows for an accelerated render compared to the previous parts which took more than a couple minutes to render (GLSL computes in parallel on the GPU, a Graphics Processing Unit designated for creating images quickly). We perform shading on vertices and fragments by computing the color of each individual piece (whether it be a vertex or a fragment).</p>
+        <p>With the accelerated shader program, I was able to implement Blinn-Phong Shading, which is a technique that takes three different shading models - ambient shading (lighting), diffuse shading (reflection), and specular shading (highlights) - and combines them to create a reflection model. This allows us to generate an image that is less computationally-expensive, while still maintaining decent shading overall.</p>
+
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part5/ambient.png" width="480px" />
+                    <figcaption align="middle">Ambient component of teapot.</figcaption>
+                    <td align="middle">
+                    <img src="part5/diffuse.png" width="480px" />
+                    <figcaption align="middle">Diffuse component of teapot.</figcaption>
+                </tr>
+                </br>
+                <tr>
+                    <td align="middle">
+                    <img src="part5/specular.png" width="480px" />
+                    <figcaption align="middle">Specular component of teapot.</figcaption>
+                    <td align="middle">
+                    <img src="part5/blinnphong.png" width="480px" />
+                    <figcaption align="middle">Ambient + Diffuse + Specular (Blinn-Phong model).</figcaption>
+                </tr>
+            </table>
+        </div>
+
+        <p>My third task was to implement texture mapping, which takes a given uv image and maps it to an object given uv coordinates. The following is the result of my implementation.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part5/me.png" width="480px" />
+                    <figcaption align="middle">Reference image (me).</figcaption>
+                    <td align="middle">
+                    <img src="part5/lmao.png" width="480px" />
+                    <figcaption align="middle">Texture mapping of my face onto a sphere.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+        <p>In the next part, I implemented bump mapping and displacement mapping, which simulated depth and actual roughness in the object based on lighting. When comparing the two textures, it is noticeable that bump mapping doesn't actually create physical depth in the object (as we rotate the object), however, displacement actually creates depth which we can see in the image.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <img src="part5/earth.jpeg" width="960px" />
+                    <figcaption align="middle">The world!</figcaption>
+                </tr>
+                </br>
+                <tr>
+                    <td align="middle">
+                    <img src="part5/bump.png" width="480px" />
+                    <figcaption align="middle">Bump mapping of the world!</figcaption>
+                    <td align="middle">
+                    <img src="part5/displacement.png" width="480px" />
+                    <figcaption align="middle">Displacement mapping of the world!</figcaption>
+                </tr>
+                </br>
+            </table>
+        </div>
+        <p>When altering the vertical and horizontal components to see how mesh coarseness would be affected, I noticed that decreasing the number of horizontal components made both object seem more stretched out horizontally, and decreasing the number of vertical components seemed to make it appear stretched out vertically. This is similar to how sampling less points leads to images that are less accurate and less clear.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part5/bh50.png" width="480px" />
+                    <figcaption align="middle">Decreasing horizontal component of bump map mesh coarseness from 256 to 50.</figcaption>
+                    <td align="middle">
+                    <img src="part5/dh50.png" width="480px" />
+                    <figcaption align="middle">Decreasing horizontal component of displacement map mesh coarseness from 256 to 50.</figcaption>
+                </tr>
+                </br>
+                <tr>
+                    <td align="middle">
+                    <img src="part5/bv50.png" width="480px" />
+                    <figcaption align="middle">Decreasing vertical component of bump map mesh coarseness from 256 to 50.</figcaption>
+                    <td align="middle">
+                    <img src="part5/dv50.png" width="480px" />
+                    <figcaption align="middle">Decreasing vertical component of displacement map mesh coarseness from 256 to 50.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+        <p>For my custom shader, I implemented an object that would appear to reflect the scene onto itself, like a ball made out of mirror material! Frustrating parts of implementing this was trying to figure out how GLSL worked, and how to add a cube background to the scene. In the end, I am very proud of the work I did to figure out the basics of node.js and how to render scenes through a shader program. I got these cube background scenes from <a href="http://www.humus.name/index.php?page=Textures">Emil Persson's site</a>.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="part5/woah.png" width="960px" />
+                    <figcaption align="middle">My amazing reflecting mirror-sphere in the bridge cube texture scene.</figcaption>
+                </tr>
+                <tr>
+                    <td align="middle">
+                    <img src="part5/wow.png" width="960px" />
+                    <figcaption align="middle">My amazing reflecting mirror-sphere in the Maskonaive cube texture scene.</figcaption>
+                </tr>
+            </table>
+        </div>
+</div>
+</body>
+</html>
