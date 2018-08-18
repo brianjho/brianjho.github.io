@@ -3,19 +3,40 @@
  /* font-family: "Comic Sans MS", cursive, sans-serif; */
 }
 
-.title {
-  color: yellow;
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-}
-
 .orange {
   color: #ff9c33;
 }
 
-.row-striped:nth-of-type(odd){
-  background-color: #ffffe6;
+/* Header */
+
+.headerText {
+  color: yellow;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  display: table;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: url(../files/gifs/Penguin.gif) scroll;
+	padding-top: 150px;
+	padding-bottom: 150px;
 }
 
-.row-striped:nth-of-type(even){
-  background-color: #ffffff;
+/* About */
+
+.about {
+  padding: 50px 0;
+  background-color: #ffe066;
+}
+
+/* Projects */
+
+.projects {
+  padding: 50px 0;
+}
+
+/* Gallery */
+
+.gallery {
+  padding: 50px 0;
+  background-color: #ffe066;
 }

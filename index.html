@@ -26,8 +26,8 @@
     <title>Brian's site</title>
   </head>
 
-  <body background="files/gifs/Penguin.gif">
-    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+  <body>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="#">&#x1F171;rian</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -35,16 +35,16 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Ho(me) <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#top">Ho(me) <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
+            <a class="nav-link" href="#about">About</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Projects</a>
+            <a class="nav-link" href="#projects">Projects</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Gallery</a>
+            <a class="nav-link" href="#gallery">Gallery</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="https://www.youtube.com/channel/UC1gmx4Jm0X2CrNj2SzuF-Cw" target="_blank">YouTube</a>
@@ -56,62 +56,60 @@
       </div>
     </nav>
 
-    <div class="container-fluid">
-      <div class="row title">
-        <div class="col">
-            <h1 align="middle">hewwo</h1>
-            <h1 align="middle"> mr obama</h1>
-            <h1 align="middle">something something filler text</h1>
-            <h1 align="middle">I can't believe I'm doing this</h1>
-        </div>
+    <div id="top" class="pageHeader">
+      <div class="headerText">
+        <h1 align="middle">Brian Ho</h1>
       </div>
+    </div>
 
-      <div class="row">
-        <div class="col">
-          <!-- <img src="files/gifs/Giraffe.gif">
-          <img src="files/gifs/Irrelephant.gif">
-          <img src="files/gifs/Koalaphant.gif">
-          <img src="files/gifs/Penguin.gif"> -->
+    <section id="about" class="about">
+      <div class="container-fluid">
+        <div class="row row-striped">
+          <div class="col-4">
+            <h3 align="left">About Me</h3>
+            One of two columns, this is probably gonna be my picture or something
+          </div>
+          <div class="col-8">
+            Other one of two columns, this is probably going to be a pretty long
+            description of stuff or maybe it'll be pretty short idk
+          </div>
+        </div>
+        <div class="row row-striped">
+          <div class="col">
+            <h3 align="left">Another About Me?</h3>
+            This is just another line where I talk really long in order to see if
+            this row thing works and wraps around the entire page so ignore This
+            entire message please
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="row row-striped">
-        <div class="col-4">
-          <h3 align="left">About Me</h3>
-          One of two columns, this is probably gonna be my picture or something
-        </div>
-        <div class="col-8">
-          Other one of two columns, this is probably going to be a pretty long
-          description of stuff or maybe it'll be pretty short idk
+    <section id="projects" class="projects">
+      <div class="container-fluid">
+        <div class="row row-striped">
+          <div class="col">
+            <h3 align="left">Projects</h3>
+              <p><a href="https://brianjho.github.io/files/projects/cs184/proj1_rasterizer/docs/index.html">CS 184 - Rasterizer</a></p>
+              <p><a href="https://brianjho.github.io/files/projects/cs184/proj2_meshedit/docs/index.html">CS 184 - Mesh Editor</a></p>
+              <p><a href="https://brianjho.github.io/files/projects/cs184/proj3_1_pathtracer/docs/index.html">CS 184 - Path Tracer 1</a></p>
+              <p><a href="https://brianjho.github.io/files/projects/cs184/proj3_2_pathtracer/docs/index.html">CS 184 - Path Tracer 2</a></p>
+              <p><a href="https://brianjho.github.io/files/projects/cs184/proj4_clothsim/docs/index.html">CS 184 - Cloth Simulator</a></p>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="row row-striped">
-        <div class="col">
-          <h3 align="left">Another About Me?</h3>
-          This is just another line where I talk really long in order to see if
-          this row thing works and wraps around the entire page so ignore This
-          entire message please
+    <section id="gallery" class="gallery">
+      <div class="container-fluid">
+        <div class="row row-striped">
+          <div class="col">
+            <h3 align="left">Gallery</h3>
+            <iframe src="https://www.youtube.com/embed/fEOLgaZVPRs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
         </div>
       </div>
-
-      <div class="row row-striped">
-        <div class="col">
-          <h3 align="left">Projects</h3>
-            <p><a href="https://brianjho.github.io/files/projects/cs184/proj1_rasterizer/docs/index.html">CS 184 - Rasterizer</a></p>
-            <p><a href="https://brianjho.github.io/files/projects/cs184/proj2_meshedit/docs/index.html">CS 184 - Mesh Editor</a></p>
-            <p><a href="https://brianjho.github.io/files/projects/cs184/proj3_1_pathtracer/docs/index.html">CS 184 - Path Tracer 1</a></p>
-            <p><a href="https://brianjho.github.io/files/projects/cs184/proj3_2_pathtracer/docs/index.html">CS 184 - Path Tracer 2</a></p>
-            <p><a href="https://brianjho.github.io/files/projects/cs184/proj4_clothsim/docs/index.html">CS 184 - Cloth Simulator</a></p>
-        </div>
-      </div>
-
-      <div class="row row-striped">
-        <div class="col">
-          <h3 align="left">Gallery</h3>
-          <iframe src="https://www.youtube.com/embed/fEOLgaZVPRs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
-      </div>
+    </section>
 
     </div>
   </body>
