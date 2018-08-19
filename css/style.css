@@ -8,7 +8,7 @@
 }
 
 /* Header */
-.headerText {
+.header {
   display: table;
   position: fixed;
   width: 100%;
