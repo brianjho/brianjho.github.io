@@ -30,22 +30,28 @@
   background-color: #ffe066;
 }
 
+/* Courses */
+.courses {
+  padding: 50px 0;
+  background-color: white;
+}
+
 /* Projects */
 .projects {
   padding: 50px 0;
-  background-color: white;
+  background-color: #ffe066;
 }
 
 /* Gallery */
 .gallery {
   padding: 50px 0;
-  background-color: #ffe066;
+  background-color: white;
 }
 
 /* Contact */
 .contact {
   padding: 50px 0;
-  background-color: white;
+  background-color: #ffe066;
 }
 
 /* Footer */
