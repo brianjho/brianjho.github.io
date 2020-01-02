@@ -59,3 +59,21 @@
   padding: 50px 0;
   background-color: white;
 }
+
+/* Doge bonk things */
+.prebonk {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: 99%;
+  max-height: 99%;
+  z-index: 1;
+}
+.postbonk {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: 99%;
+  max-height: 99%;
+  z-index: 0;
+}

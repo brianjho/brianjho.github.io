@@ -1,0 +1,44 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <audio id="bonkSound">
+      <source src="../files/sounds/bonk.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <!-- JavaScript -->
+    <script>
+      var bonkSound = document.getElementById("bonkSound");
+
+      function bonkDoge() {
+        bonkSound.load();
+        bonkSound.play();
+        var preBonk = document.getElementById("preBonk");
+        var postBonk = document.getElementById("postBonk");
+        preBonk.style.visibility = 'hidden';
+        postBonk.style.visibility = 'visible';
+      }
+
+      function unbonkDoge() {
+        var postBonk = document.getElementById("postBonk");
+        preBonk.style.visibility = 'visible';
+        postBonk.style.visibility = 'hidden';
+      }
+    </script>
+
+    <link rel="icon" href="../files/gifs/Penguin.gif">
+    <title>DOGE 🅱️ONK</title>
+
+  </head>
+
+  <body>
+    <img src="../files/images/pre_bonk.png" id="preBonk" onclick="bonkDoge()" class="prebonk">
+    <img src="../files/images/post_bonk.png" id="postBonk" onclick="unbonkDoge()" class="postbonk">
+  </body>
+
+</html>
