@@ -15,6 +15,12 @@
     <script>
       var bonkSound = document.getElementById("bonkSound");
 
+      var numBonks = localStorage.getItem("numBonks");
+      if (numBonks == null) {
+        var numBonks = 0;
+      }
+      // var numBonks = 0;
+
       function bonkDoge() {
         bonkSound.load();
         bonkSound.play();
@@ -22,6 +28,12 @@
         var postBonk = document.getElementById("postBonk");
         preBonk.style.visibility = 'hidden';
         postBonk.style.visibility = 'visible';
+
+        document.getElementById("bonkButton").className = "btn btn-danger";
+
+        numBonks = parseInt(numBonks) + 1;
+        document.getElementById("numBonks").innerHTML = numBonks;
+        localStorage.setItem("numBonks", numBonks);
       }
 
       function unbonkDoge() {
@@ -29,6 +41,12 @@
         preBonk.style.visibility = 'visible';
         postBonk.style.visibility = 'hidden';
       }
+
+      function presetBonks() {
+        document.getElementById("numBonks").innerHTML = numBonks;
+      }
+
+      window.onload = presetBonks;
     </script>
 
     <link rel="icon" href="../files/gifs/Penguin.gif">
@@ -37,8 +55,9 @@
   </head>
 
   <body>
-    <img src="../files/images/pre_bonk.png" id="preBonk" onclick="bonkDoge()" class="prebonk">
-    <img src="../files/images/post_bonk.png" id="postBonk" onclick="unbonkDoge()" class="postbonk">
+    <button type="button" class="btn btn-primary" id ="bonkButton" disabled>Bonks: <a id="numBonks">0</a></button>
+    <img src="../files/images/pre_bonk.png" id="preBonk" onmousedown="bonkDoge()" ontouchstart="bonkDoge()" class="prebonk">
+    <img src="../files/images/post_bonk.png" id="postBonk" onmouseup="unbonkDoge()" ontouchend="unbonkDoge()" class="postbonk">
   </body>
 
 </html>
