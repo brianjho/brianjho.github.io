@@ -65,8 +65,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  max-width: 99%;
-  max-height: 99%;
+  max-width: 100%;
+  max-height: 100%;
   z-index: -1;
   -khtml-user-select: none;
   -o-user-select: none;
@@ -79,8 +79,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  max-width: 99%;
-  max-height: 99%;
+  max-width: 100%;
+  max-height: 100%;
   z-index: -2;
   -khtml-user-select: none;
   -o-user-select: none;
