@@ -19,11 +19,10 @@
       if (numBonks == null) {
         var numBonks = 0;
       }
-      // var numBonks = 0;
 
       function bonkDoge() {
-        bonkSound.load();
         bonkSound.play();
+
         var preBonk = document.getElementById("preBonk");
         var postBonk = document.getElementById("postBonk");
         preBonk.style.visibility = 'hidden';
@@ -37,6 +36,7 @@
       }
 
       function unbonkDoge() {
+        var preBonk = document.getElementById("preBonk");
         var postBonk = document.getElementById("postBonk");
         preBonk.style.visibility = 'visible';
         postBonk.style.visibility = 'hidden';
@@ -44,6 +44,7 @@
 
       function presetBonks() {
         document.getElementById("numBonks").innerHTML = numBonks;
+        bonkSound.load();
       }
 
       window.onload = presetBonks;
