@@ -21,6 +21,7 @@
       }
 
       function bonkDoge() {
+        bonkSound.load();
         bonkSound.play();
 
         var preBonk = document.getElementById("preBonk");
@@ -44,7 +45,6 @@
 
       function presetBonks() {
         document.getElementById("numBonks").innerHTML = numBonks;
-        bonkSound.load();
       }
 
       window.onload = presetBonks;
