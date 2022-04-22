@@ -3,8 +3,8 @@
   "short_name": "Blackjack",
   "start_url": "/blackjack/index.html",
   "display": "standalone",
-  "background_color": "#FFE9D2",
-  "theme_color": "#FFE1C4",
+  "background_color": "#ffe066",
+  "theme_color": "#ffe066",
   "orientation": "portrait-primary",
   "description": "A simulator for blackjack",
   "icons": [
