@@ -98,26 +98,28 @@
   <body class="blackjack">
     <div class="container">
       <div class="row">
-        <div class="col centered">
-          <i class="fa fa-question-circle centered" style="font-size:36px;"></i>
+        <div class="col">
+          <button type="button" class="btn">
+            <i class="fa fa-question-circle centered" style="font-size:36px;"></i>
+          </button>
+          <p id="optimalPlays">Number of optimal plays: <a id="numOptimalPlays">0</a></p>
+          <p id="remainingCardsText">Remaining cards: <a id="remainingCards">?</a></p>
         </div>
         <div class="col centered">
           <h1>Blackjack</h1>
         </div>
         <div class="col centered">
-          <i class="fa fa-gear" style="font-size:36px;" data-toggle="modal" data-target="#exampleModal"></i>
+          <button type="button" class="btn">
+            <i class="fa fa-gear" style="font-size:36px;" data-toggle="modal" data-target="#exampleModal"></i>
+          </button>
         </div>
       </div>
-      <!-- Button trigger modal -->
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
-      </button>
       <!-- Modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -127,7 +129,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
             </div>
           </div>
         </div>
@@ -139,29 +141,23 @@
           <button type="button" class="btn btn-primary" id ="newGameButton" onclick="startNewGame()">Reset game</button>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <p id="optimalPlays">Number of optimal plays: <a id="numOptimalPlays">0</a></p>
-        </div>
-        <div class="col">
-          <p id="remainingCardsText">Remaining cards: <a id="remainingCards">?</a></p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <p id="player">Your hand: <a id="playerHand">empty</a></p>
-        </div>
+      <div class="row centered">
         <div class="col">
           <p id="dealer">Dealer's hand: <a id="dealerHand">empty</a></p>
         </div>
       </div>
-      <div class="row ml-auto">
+      <div class="row centered">
         <div class="col">
+          <p id="player">Your hand: <a id="playerHand">empty</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col centered">
           <button type="button" class="btn btn-primary" id ="surrenderButton" onclick="cardActionSurrender()" disabled>Surrender</button>
-          <button type="button" class="btn btn-primary" id ="hitButton" onclick="cardActionHit()" disabled>Hit</button>
           <button type="button" class="btn btn-primary" id ="doubleButton" onclick="cardActionDouble()" disabled>Double</button>
-          <button type="button" class="btn btn-primary" id ="standButton" onclick="cardActionStand()" disabled>Stand</button>
           <button type="button" class="btn btn-primary" id ="splitButton" onclick="cardActionSplit()" disabled>Split</button>
+          <button type="button" class="btn btn-primary" id ="hitButton" onclick="cardActionHit()" disabled>Hit</button>
+          <button type="button" class="btn btn-primary" id ="standButton" onclick="cardActionStand()" disabled>Stand</button>
         </div>
       </div>
     </div>
