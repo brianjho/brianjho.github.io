@@ -35,10 +35,9 @@ class Card {
 }
 
 class ShoeManager {
-  constructor(numDecks, gameMode, minCardsBeforeShuffle) {
+  constructor(numDecks, gameMode) {
     this.numDecks = numDecks;
     this.gameMode = gameMode;
-    this.minCardsBeforeShuffle = minCardsBeforeShuffle;
 
     this.shoe = [];
 
@@ -63,8 +62,8 @@ class ShoeManager {
   }
 
   draw(numCards) {
-    if (this.shoe.length < this.minCardsBeforeShuffle || this.shoe.length < numCards) {
-      console.log("Shoe too small. Making new shoe.");
+    if (this.shoe.length < numCards) {
+      console.log("Not enough cards. Making new shoe.");
       this.newShoe();
     }
     return Array.from({length: numCards}, x => this.shoe.pop());
@@ -82,7 +81,7 @@ class GameManager {
     this.dealerHand = [];
     this.partialDealerHand = true;
 
-    this.shoeManager = new ShoeManager(numDecks, gameMode, minCardsBeforeShuffle);
+    this.shoeManager = new ShoeManager(numDecks, gameMode);
   }
 
   get remainingCardsInShoe() {
@@ -90,6 +89,10 @@ class GameManager {
   }
 
   newRound() {
+    if (this.remainingCardsInShoe < this.minCardsBeforeShuffle) {
+      console.log("Shoe too small. Making new shoe.");
+      this.shoeManager.newShoe();
+    }
     this.playerHand = this.shoeManager.draw(2);
     this.dealerHand = this.shoeManager.draw(2);
     console.log("player hand: " + this.playerHand);
