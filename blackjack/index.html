@@ -98,26 +98,87 @@
   <body class="blackjack">
     <div class="container">
       <div class="row">
-        <div class="col">
+        <div class="col centered">
           <button type="button" class="btn">
-            <i class="fa fa-question-circle centered" style="font-size:36px;"></i>
+            <i class="fa fa-question-circle" style="font-size:36px;" data-toggle="modal" data-target="#optimalStrategyModal"></i>
           </button>
         </div>
-        <div class="col centered">
+        <div class="col ">
           <h1>Blackjack</h1>
         </div>
         <div class="col centered">
           <button type="button" class="btn">
-            <i class="fa fa-gear" style="font-size:36px;" data-toggle="modal" data-target="#exampleModal"></i>
+            <i class="fa fa-gear" style="font-size:36px;" data-toggle="modal" data-target="#settingsModal"></i>
           </button>
         </div>
       </div>
-      <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <!-- Optimal Strategy Modal -->
+      <div class="modal fade" id="optimalStrategyModal" tabindex="-1" role="dialog" aria-labelledby="optimalStrategyModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
+              <h5 class="modal-title" id="optimalStrategyModal">Optimal Strategy</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p><strong>Surrenders</strong></p>
+              <ul>
+                <li>16 surrenders against dealer 9 through Ace, otherwise don't surrender (revert to hard totals).</li>
+                <li>15 surrenders against dealer 10, otherwise don't surrender (revert to hard totals).</li>
+              </ul>
+              <p><strong>Splits</strong></p>
+              <ul>
+                <li>Always split aces.</li>
+                <li>Never split tens.</li>
+                <li>A pair of 9's splits against dealer 2 through 9, except for 7, otherwise stand.</li>
+                <li>Always split 8's.</li>
+                <li>A pair of 7's splits against dealer 2 through 7, otherwise hit.</li>
+                <li>A pair of 6's splits against dealer 2 through 6, otherwise hit.</li>
+                <li>A pair of 5's doubles against dealer 2 through 9, otherwise hit.</li>
+                <li>A pair of 4's splits against dealer 5 and 6, otherwise hit.</li>
+                <li>A pair of 3's splits against dealer 2 through 7, otherwise hit.</li>
+                <li>A pair of 2's splits against dealer 2 through 7, otherwise hit.</li>
+              </ul>
+              <p><strong>Soft totals</strong></p>
+              <ul>
+                <li>Soft 20 (A,9) always stands.</li>
+                <li>Soft 19 (A,8) doubles against dealer 6, otherwise stand.</li>
+                <li>Soft 18 (A,7) doubles against dealer 2 through 6, and hits against 9 through Ace, otherwise stand.</li>
+                <li>Soft 17 (A,6) doubles against dealer 3 through 6, otherwise hit.</li>
+                <li>Soft 16 (A,5) doubles against dealer 4 through 6, otherwise hit.</li>
+                <li>Soft 15 (A,4) doubles against dealer 4 through 6, otherwise hit.</li>
+                <li>Soft 14 (A,3) doubles against dealer 5 through 6, otherwise hit.</li>
+                <li>Soft 13 (A,2) doubles against dealer 5 through 6, otherwise hit.</li>
+              </ul>
+              <p><strong>Hard totals</strong></p>
+              <ul>
+                <li>17 and up always stands.</li>
+                <li>16 stands against dealer 2 through 6, otherwise hit.</li>
+                <li>15 stands against dealer 2 through 6, otherwise hit.</li>
+                <li>14 stands against dealer 2 through 6, otherwise hit.</li>
+                <li>13 stands against dealer 2 through 6, otherwise hit.</li>
+                <li>12 stands against dealer 4 through 6, otherwise hit.</li>
+                <li>11 always doubles.</li>
+                <li>10 doubles against dealer 2 through 9 otherwise hit.</li>
+                <li>9 doubles against dealer 3 through 6 otherwise hit.</li>
+                <li>8 always hits.</li>
+              </ul>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Settings Modal -->
+      <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
