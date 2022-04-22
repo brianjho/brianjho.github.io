@@ -72,10 +72,11 @@ class ShoeManager {
 
 class GameManager {
 
-  constructor(gameMode, numDecks, minCardsBeforeShuffle) {
+  constructor(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand) {
     this.gameMode = gameMode;
     this.numDecks = numDecks;
     this.minCardsBeforeShuffle = minCardsBeforeShuffle;
+    this.forceShowFullDealerHand = forceShowFullDealerHand;
 
     this.playerHand = [];
     this.dealerHand = [];
@@ -113,11 +114,10 @@ class GameManager {
   showDealerHand() {
     if (!this.dealerHand.length) {
       return "empty"
-    }
-    if (this.partialDealerHand) {
-      return this.dealerHand.slice(0, 1).toString() + ",?";
-    } else {
+    } else if (this.forceShowFullDealerHand || !this.partialDealerHand) {
       return this.dealerHand.toString();
+    } else {
+      return this.dealerHand.slice(0, 1).toString() + ",?";
     }
   }
 
