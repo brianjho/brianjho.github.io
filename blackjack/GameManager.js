@@ -101,10 +101,17 @@ class GameManager {
   }
 
   showPlayerHand() {
-    return this.playerHand.toString();
+    if (!this.dealerHand.length) {
+      return "empty"
+    } else {
+      return this.playerHand.toString();
+    }
   }
 
   showDealerHand() {
+    if (!this.dealerHand.length) {
+      return "empty"
+    }
     if (this.partialDealerHand) {
       return this.dealerHand.slice(0, 1).toString() + ",?";
     } else {
