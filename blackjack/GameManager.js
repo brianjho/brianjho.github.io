@@ -80,6 +80,7 @@ class GameManager {
     this.playerHand = [];
     this.dealerHand = [];
     this.partialDealerHand = true;
+    this.outcome = "?";
 
     this.shoeManager = new ShoeManager(numDecks, gameMode);
   }
@@ -95,9 +96,10 @@ class GameManager {
     }
     this.playerHand = this.shoeManager.draw(2);
     this.dealerHand = this.shoeManager.draw(2);
-    console.log("player hand: " + this.playerHand);
-    console.log("dealer hand: " + this.dealerHand);
+    console.log("Player hand: " + this.playerHand);
+    console.log("Dealer hand: " + this.dealerHand);
     this.partialDealerHand = true;
+    this.outcome = "?";
   }
 
   showPlayerHand() {
@@ -128,12 +130,11 @@ class GameManager {
       }
       totalValue += card.value;
       if (totalValue > 21 && numAces > 0) {
-        console.log("Reducing value by 10 because we have an ace to save us");
         totalValue -= 10;
         numAces -= 1;
       }
     }
-    console.log("best value of " + hand + " is " + totalValue);
+    console.log("Best value of " + hand + " is " + totalValue);
     return totalValue;
   }
 
@@ -152,18 +153,23 @@ class GameManager {
     while (this.bestHandValue(this.dealerHand) < 17) {
       this.dealerHand.push(...this.shoeManager.draw(1));
     }
-    console.log("dealer hand ends turn");
+    this.setOutcome();
   }
 
-  roundWinner() {
+  setOutcome() {
     var playerScore = this.bestHandValue(this.playerHand);
     var dealerScore = this.bestHandValue(this.dealerHand);
-    if (playerScore > 21 || (dealerScore <= 21 && dealerScore > playerScore)) {
-      return "dealer";
-    } else if (dealerScore > 21 || playerScore > dealerScore) {
-      return "player";
+    if (playerScore > 21) {
+      this.outcome = "Player bust. Dealer wins.";
+    } else if (dealerScore <= 21 && dealerScore > playerScore) {
+      this.outcome = "Dealer wins.";
+    } else if (dealerScore > 21) {
+      this.outcome = "Dealer bust. Player wins!";
+    } else if (playerScore > dealerScore) {
+      this.outcome = "Player wins!";
     } else {
-      return "tie";
+      this.outcome = "Push (Tie)!!";
     }
+    this.outcome += " Player: " + playerScore + ", Dealer: " + dealerScore;
   }
 }
