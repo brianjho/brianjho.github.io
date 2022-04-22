@@ -1,0 +1,17 @@
+{
+  "name": "Blackjack Simulator",
+  "short_name": "Blacjack Sim",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#FFE9D2",
+  "theme_color": "#FFE1C4",
+  "orientation": "portrait-primary",
+  "description": "A daily word game",
+  "icons": [
+    {
+      "src": "../files/gifs/Penguin.gif",
+      "type": "image/png",
+      "sizes": "72x72"
+    }
+  ]
+}
