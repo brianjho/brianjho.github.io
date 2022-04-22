@@ -97,6 +97,7 @@
 
   <body class="blackjack">
     <div class="container">
+      <!-- Header -->
       <div class="row">
         <div class="col centered">
           <button type="button" class="btn">
@@ -112,6 +113,43 @@
           </button>
         </div>
       </div>
+      <!-- Blackjack game -->
+      <div class="row">
+        <div class="col">
+          <p id="optimalPlays">Number of optimal plays: <a id="numOptimalPlays">0</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <p id="remainingCardsText">Remaining cards: <a id="remainingCards">?</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button type="button" class="btn btn-primary" id ="newRoundButton" onclick="startNewRound()">New round</button>
+          <button type="button" class="btn btn-primary" id ="newGameButton" onclick="startNewGame()">Reset game</button>
+        </div>
+      </div>
+      <div class="row centered">
+        <div class="col">
+          <p id="dealer">Dealer's hand: <a id="dealerHand">empty</a></p>
+        </div>
+      </div>
+      <div class="row centered">
+        <div class="col">
+          <p id="player">Your hand: <a id="playerHand">empty</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col centered">
+          <button type="button" class="btn btn-primary" id ="surrenderButton" onclick="cardActionSurrender()" disabled>Surrender</button>
+          <button type="button" class="btn btn-primary" id ="doubleButton" onclick="cardActionDouble()" disabled>Double</button>
+          <button type="button" class="btn btn-primary" id ="splitButton" onclick="cardActionSplit()" disabled>Split</button>
+          <button type="button" class="btn btn-primary" id ="hitButton" onclick="cardActionHit()" disabled>Hit</button>
+          <button type="button" class="btn btn-primary" id ="standButton" onclick="cardActionStand()" disabled>Stand</button>
+        </div>
+      </div>
+      <!-- Modals -->
       <!-- Optimal Strategy Modal -->
       <div class="modal fade" id="optimalStrategyModal" tabindex="-1" role="dialog" aria-labelledby="optimalStrategyModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -190,42 +228,6 @@
               <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
             </div>
           </div>
-        </div>
-      </div>
-      <!-- Blackjack game -->
-      <div class="row">
-        <div class="col">
-          <p id="optimalPlays">Number of optimal plays: <a id="numOptimalPlays">0</a></p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <p id="remainingCardsText">Remaining cards: <a id="remainingCards">?</a></p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <button type="button" class="btn btn-primary" id ="newRoundButton" onclick="startNewRound()">New round</button>
-          <button type="button" class="btn btn-primary" id ="newGameButton" onclick="startNewGame()">Reset game</button>
-        </div>
-      </div>
-      <div class="row centered">
-        <div class="col">
-          <p id="dealer">Dealer's hand: <a id="dealerHand">empty</a></p>
-        </div>
-      </div>
-      <div class="row centered">
-        <div class="col">
-          <p id="player">Your hand: <a id="playerHand">empty</a></p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col centered">
-          <button type="button" class="btn btn-primary" id ="surrenderButton" onclick="cardActionSurrender()" disabled>Surrender</button>
-          <button type="button" class="btn btn-primary" id ="doubleButton" onclick="cardActionDouble()" disabled>Double</button>
-          <button type="button" class="btn btn-primary" id ="splitButton" onclick="cardActionSplit()" disabled>Split</button>
-          <button type="button" class="btn btn-primary" id ="hitButton" onclick="cardActionHit()" disabled>Hit</button>
-          <button type="button" class="btn btn-primary" id ="standButton" onclick="cardActionStand()" disabled>Stand</button>
         </div>
       </div>
     </div>
