@@ -148,7 +148,7 @@ class GameManager {
   roundWinner() {
     var playerScore = this.bestHandValue(this.playerHand);
     var dealerScore = this.bestHandValue(this.dealerHand);
-    if (playerScore > 21 || dealerScore > playerScore) {
+    if (playerScore > 21 || (dealerScore <= 21 && dealerScore > playerScore)) {
       return "dealer";
     } else if (dealerScore > 21 || playerScore > dealerScore) {
       return "player";
