@@ -96,3 +96,7 @@
   overflow: hidden;
   background-color: #ffe066;
 }
+
+.centered {
+  text-align: center;
+}
