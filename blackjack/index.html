@@ -55,10 +55,9 @@
       }
 
       function cardActionHit() {
-        var forcedEnd = gameManager.playerActionHit();
-        if (forcedEnd) {
+        var bust = gameManager.playerActionHit();
+        if (bust) {
           disableCardActionButtons();
-          document.getElementById("standButton").disabled = false;
         }
         renderHandsAndCards();
       }

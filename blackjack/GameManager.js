@@ -138,11 +138,12 @@ class GameManager {
     return totalValue;
   }
 
-  // returns true if can't play anymore.
+  // returns true player busts.
   playerActionHit() {
     this.playerHand.push(...this.shoeManager.draw(1));
     var bestHandValue = this.bestHandValue(this.playerHand);
-    if (bestHandValue >= 21) {
+    if (bestHandValue > 21) {
+      this.setOutcome();
       return true;
     }
     return false;
