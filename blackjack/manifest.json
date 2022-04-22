@@ -1,12 +1,12 @@
 {
   "name": "Blackjack Simulator",
-  "short_name": "Blacjack Sim",
-  "start_url": "/index.html",
+  "short_name": "Blackjack",
+  "start_url": "/blackjack/index.html",
   "display": "standalone",
   "background_color": "#FFE9D2",
   "theme_color": "#FFE1C4",
   "orientation": "portrait-primary",
-  "description": "A daily word game",
+  "description": "A simulator for blackjack",
   "icons": [
     {
       "src": "../files/gifs/Penguin.gif",

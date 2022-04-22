@@ -89,3 +89,9 @@
   user-select: none;
   touch-action: manipulation;
 }
+
+.blackjack {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
