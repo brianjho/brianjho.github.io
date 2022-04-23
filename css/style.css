@@ -106,3 +106,9 @@
   position: absolute;
   opacity: 0;
 }
+
+.cardtext::before {
+  font-weight: bold;
+  color: navy;
+  content: "card";
+}
