@@ -27,7 +27,10 @@
       var forceShowFullDealerHand = false;
       var gameManager;
 
+      window.onload = startNewGame;
+
       function startNewGame() {
+        disableCardActionButtons();
         gameManager = new GameManager(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand);
         renderHandsAndCards();
       }
@@ -62,10 +65,6 @@
         renderHandsAndCards();
       }
 
-      function cardActionSurrender() {
-        disableCardActionButtons();
-      }
-
       function cardActionDouble() {
         cardActionHit();
         disableCardActionButtons();
@@ -77,6 +76,10 @@
         disableCardActionButtons();
         gameManager.dealerActionPlayUntilFinish();
         renderHandsAndCards();
+      }
+
+      function cardActionSurrender() {
+        disableCardActionButtons();
       }
 
       function cardActionSplit() {
@@ -105,7 +108,57 @@
         document.getElementById("outcome").innerHTML = gameManager.outcome;
       }
 
-      window.onload = startNewGame;
+      function clearCards() {
+
+      }
+
+      // --- Cards UI ---
+
+      var id = null;
+      function slideIn1() {
+        slideIn(1);
+      }
+      function slideIn2() {
+        slideIn(2);
+      }
+      function slideIn(cardId) {
+        var elem = document.getElementById("playerCard" + cardId);
+        var pos = 100;
+        var opacity = 0;
+        elem.style.left = pos + 'px';
+        elem.style.opacity = opacity;
+        clearInterval(id);
+        id = setInterval(frame, 10);
+        var shiftLeftInterval = 2;
+        var fadeInInterval = 0.03;
+        function frame() {
+          if (pos == 0 && opacity >= 1) {
+            clearInterval(id);
+          } else {
+            shiftLeft(cardId, shiftLeftInterval, pos, 0);
+            fadeIn(cardId, fadeInInterval, opacity, 1);
+            pos -= shiftLeftInterval;
+            opacity += fadeInInterval;
+          }
+        }
+      }
+      function shiftLeft(cardId, interval, currPos, goalPos) {
+        var elem = document.getElementById("playerCard" + cardId);
+        if (currPos > goalPos) {
+          var newPos = currPos - interval;
+          elem.style.left = newPos + 'px';
+        }
+      }
+      function fadeIn(cardId, interval, currOpacity, goalOpacity) {
+        var elem = document.getElementById("playerCard" + cardId);
+        if (currOpacity < goalOpacity) {
+          var newOpacity = currOpacity - interval;
+          elem.style.opacity = newOpacity;
+          if (newOpacity > goalOpacity) {
+            elem.style.opacity = goalOpacity;
+          }
+        }
+      }
     </script>
   </head>
 
@@ -159,8 +212,14 @@
           <p id="player">Your hand: <a id="playerHand">empty</a></p>
         </div>
       </div>
+      <!-- Cards UI -->
+      <div class="card" id="playerCard1"></div>
+      <div class="card" id="playerCard2"></div>
+      <!-- Actions -->
       <div class="row">
         <div class="col centered">
+          <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn1()">Slide in 1</button>
+          <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn2()">Slide in 2</button>
           <button type="button" class="btn btn-success" id ="surrenderButton" onclick="cardActionSurrender()" disabled>Surrender</button>
           <button type="button" class="btn btn-success" id ="doubleButton" onclick="cardActionDouble()" disabled>Double</button>
           <button type="button" class="btn btn-success" id ="splitButton" onclick="cardActionSplit()" disabled>Split</button>
@@ -245,23 +304,28 @@
                 </div>
               </div>
               <div class="row">
-                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
-                  <label class="btn btn-outline-primary" for="btnradio1">1</label>
-                  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked>
-                  <label class="btn btn-outline-primary" for="btnradio2">2</label>
-                  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-                  <label class="btn btn-outline-primary" for="btnradio3">3</label>
-                  <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
-                  <label class="btn btn-outline-primary" for="btnradio4">4</label>
-                  <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
-                  <label class="btn btn-outline-primary" for="btnradio5">5</label>
-                  <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
-                  <label class="btn btn-outline-primary" for="btnradio6">6</label>
-                  <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off">
-                  <label class="btn btn-outline-primary" for="btnradio7">7</label>
-                  <input type="radio" class="btn-check" name="btnradio" id="btnradio8" autocomplete="off">
-                  <label class="btn btn-outline-primary" for="btnradio8">8</label>
+                <div class="col">
+                  <p>Decks:</p>
+                </div>
+                <div class="col">
+                  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio1">1</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="btnradio2">2</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio3">3</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio4">4</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio5">5</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio6">6</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio7">7</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio8" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio8">8</label>
+                  </div>
                 </div>
               </div>
             </div>

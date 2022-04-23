@@ -99,3 +99,10 @@
 .centered {
   text-align: center;
 }
+
+.card {
+  width: 125px;
+  height: 175px;
+  position: absolute;
+  opacity: 0;
+}
