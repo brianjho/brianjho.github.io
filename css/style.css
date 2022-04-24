@@ -111,6 +111,7 @@
   height: 175px;
   position: absolute;
   opacity: 0;
+  left: 2px;
 }
 
 .cardtext::before {

@@ -17,6 +17,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="GameManager.js"></script>
+    <script src="HandUiManager.js"></script>
     <script>
       var numOptimalPlays = localStorage.getItem("numOptimalPlays");
       var numTotalGames = localStorage.getItem("");
@@ -26,12 +27,14 @@
       var gameMode = "standard";
       var forceShowFullDealerHand = false;
       var gameManager;
+      var handUiManager;
 
       window.onload = startNewGame;
 
       function startNewGame() {
         disableCardActionButtons();
         gameManager = new GameManager(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand);
+        handUiManager = new HandUiManager();
         renderHandsAndCards();
       }
 
@@ -115,54 +118,30 @@
       // --- Cards UI ---
 
       var id = null;
-      function slideIn1() {
-        slideIn(1);
-      }
-      function slideIn2() {
-        slideIn(2);
-      }
-      function slideIn3() {
-        slideIn(3);
-      }
-      function slideIn4() {
-        slideIn(4);
-      }
-      function slideIn(cardId) {
-        var elem = document.getElementById("playerCard" + cardId);
+      function addCard() {
         var pos = 100;
         var opacity = 0;
-        elem.style.left = pos + 'px';
-        elem.style.opacity = opacity;
-        elem.style.content = "1";
-        clearInterval(id);
-        id = setInterval(frame, 10);
-        var shiftLeftInterval = 2;
-        var fadeInInterval = 0.03;
-        function frame() {
-          if (pos == 0 && opacity >= 1) {
-            clearInterval(id);
-          } else {
-            shiftLeft(cardId, shiftLeftInterval, pos, 0);
-            fadeIn(cardId, fadeInInterval, opacity, 1);
-            pos -= shiftLeftInterval;
-            opacity += fadeInInterval;
-          }
+        var elem = document.getElementById("playerCard" + (handUiManager.numCards + 1));
+        if (elem) {
+          var cardNum = handUiManager.addCard(pos, 0, -2, opacity, 1, 0.04);
+          elem.style.left = pos + 'px';
+          elem.style.opacity = opacity;
+          clearInterval(id);
+          id = setInterval(nextFrame, 10);
+        } else {
+          console.log("Not enough cards provided by the document to render.");
         }
       }
-      function shiftLeft(cardId, interval, currPos, goalPos) {
-        var elem = document.getElementById("playerCard" + cardId);
-        if (currPos > goalPos) {
-          var newPos = currPos - interval;
-          elem.style.left = newPos + 'px';
-        }
-      }
-      function fadeIn(cardId, interval, currOpacity, goalOpacity) {
-        var elem = document.getElementById("playerCard" + cardId);
-        if (currOpacity < goalOpacity) {
-          var newOpacity = currOpacity - interval;
-          elem.style.opacity = newOpacity;
-          if (newOpacity > goalOpacity) {
-            elem.style.opacity = goalOpacity;
+      function nextFrame() {
+        if (handUiManager.doneAnimating()) {
+          clearInterval(id);
+        } else {
+          var nextPositionList = handUiManager.getNextPositionList();
+          var nextOpacityList = handUiManager.getNextOpacityList();
+          for (let i = 1; i <= handUiManager.numCards; i++) {
+            var elem = document.getElementById("playerCard" + i);
+            elem.style.left = nextPositionList[i - 1] + 'px';
+            elem.style.opacity = nextOpacityList[i - 1];
           }
         }
       }
@@ -228,14 +207,18 @@
         <div class="card cardtext" id="playerCard2" style="margin-top: -175px; margin-left: 50px;"></div>
         <div class="card cardtext" id="playerCard3" style="margin-top: -175px; margin-left: 100px;"></div>
         <div class="card cardtext" id="playerCard4" style="margin-top: -175px; margin-left: 150px;"></div>
+        <div class="card cardtext" id="playerCard5" style="margin-top: -175px; margin-left: 200px;"></div>
+        <div class="card cardtext" id="playerCard6" style="margin-top: -175px; margin-left: 250px;"></div>
+        <div class="card cardtext" id="playerCard7" style="margin-top: -175px; margin-left: 300px;"></div>
+        <div class="card cardtext" id="playerCard8" style="margin-top: -175px; margin-left: 350px;"></div>
+        <div class="card cardtext" id="playerCard9" style="margin-top: -175px; margin-left: 400px;"></div>
+        <div class="card cardtext" id="playerCard10" style="margin-top: -175px; margin-left: 450px;"></div>
+        <div class="card cardtext" id="playerCard11" style="margin-top: -175px; margin-left: 500px;"></div>
       </div>
       <!-- Actions -->
       <div class="row">
         <div class="col centered">
-          <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn1()">Slide in 1</button>
-          <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn2()">Slide in 2</button>
-          <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn3()">Slide in 3</button>
-          <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn4()">Slide in 4</button>
+          <button type="button" class="btn btn-success" id ="slideInButton" onclick="addCard()">Add Card</button>
           <button type="button" class="btn btn-success" id ="surrenderButton" onclick="cardActionSurrender()" disabled>Surrender</button>
           <button type="button" class="btn btn-success" id ="doubleButton" onclick="cardActionDouble()" disabled>Double</button>
           <button type="button" class="btn btn-success" id ="splitButton" onclick="cardActionSplit()" disabled>Split</button>
