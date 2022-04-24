@@ -121,12 +121,19 @@
       function slideIn2() {
         slideIn(2);
       }
+      function slideIn3() {
+        slideIn(3);
+      }
+      function slideIn4() {
+        slideIn(4);
+      }
       function slideIn(cardId) {
         var elem = document.getElementById("playerCard" + cardId);
         var pos = 100;
         var opacity = 0;
         elem.style.left = pos + 'px';
         elem.style.opacity = opacity;
+        elem.style.content = "1";
         clearInterval(id);
         id = setInterval(frame, 10);
         var shiftLeftInterval = 2;
@@ -213,13 +220,22 @@
         </div>
       </div>
       <!-- Cards UI -->
-      <div class="card cardtext" id="playerCard1"></div>
-      <div class="card cardtext" id="playerCard2"></div>
+      <div class="singleHandArea">
+        <div class="card cardtext" id="dealerCard1"></div>
+      </div>
+      <div class="singleHandArea">
+        <div class="card cardtext" id="playerCard1"></div>
+        <div class="card cardtext" id="playerCard2" style="margin-top: -175px; margin-left: 50px;"></div>
+        <div class="card cardtext" id="playerCard3" style="margin-top: -175px; margin-left: 100px;"></div>
+        <div class="card cardtext" id="playerCard4" style="margin-top: -175px; margin-left: 150px;"></div>
+      </div>
       <!-- Actions -->
       <div class="row">
         <div class="col centered">
           <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn1()">Slide in 1</button>
           <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn2()">Slide in 2</button>
+          <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn3()">Slide in 3</button>
+          <button type="button" class="btn btn-success" id ="slideInButton" onclick="slideIn4()">Slide in 4</button>
           <button type="button" class="btn btn-success" id ="surrenderButton" onclick="cardActionSurrender()" disabled>Surrender</button>
           <button type="button" class="btn btn-success" id ="doubleButton" onclick="cardActionDouble()" disabled>Double</button>
           <button type="button" class="btn btn-success" id ="splitButton" onclick="cardActionSplit()" disabled>Split</button>
