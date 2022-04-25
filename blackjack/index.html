@@ -36,6 +36,7 @@
         gameManager = new GameManager(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand);
         handUiManager = new HandUiManager();
         renderHandsAndCards();
+        clearCards();
       }
 
       function saveChanges() {
@@ -56,12 +57,16 @@
       function startNewRound() {
         gameManager.newRound();
         enableCardActionButtons();
+        clearCards();
         document.getElementById("playerHand").innerHTML = "?";
         renderHandsAndCards();
+        addCard();
+        addCard();
       }
 
       function cardActionHit() {
         var bust = gameManager.playerActionHit();
+        addCard()
         if (bust) {
           disableCardActionButtons();
         }
@@ -123,15 +128,18 @@
         var opacity = 0;
         var elem = document.getElementById("playerCard" + (handUiManager.numCards + 1));
         if (elem) {
-          var cardNum = handUiManager.addCard(pos, 0, -2, opacity, 1, 0.04);
+          var cardNum = handUiManager.addCard(pos, 0, -5, opacity, 1, 0.1);
           elem.style.left = pos + 'px';
           elem.style.opacity = opacity;
+          elem.style.marginTop = (cardNum == 1) ? '0px' : '-175px';
+          elem.style.marginLeft = ((cardNum - 1) * 50) + 'px';
           clearInterval(id);
-          id = setInterval(nextFrame, 10);
+          id = setInterval(nextFrame, 20);
         } else {
           console.log("Not enough cards provided by the document to render.");
         }
       }
+
       function nextFrame() {
         if (handUiManager.doneAnimating()) {
           clearInterval(id);
@@ -142,6 +150,18 @@
             var elem = document.getElementById("playerCard" + i);
             elem.style.left = nextPositionList[i - 1] + 'px';
             elem.style.opacity = nextOpacityList[i - 1];
+          }
+        }
+      }
+
+      function clearCards() {
+        clearInterval(id);
+        handUiManager.resetUiTracker();
+        for (let i = 1; i <= 11; i++) {
+          var elem = document.getElementById("playerCard" + i);
+          if (elem) {
+            elem.style.left = '100px';
+            elem.style.opacity = 0;
           }
         }
       }
@@ -203,7 +223,7 @@
         <div class="card cardtext" id="dealerCard1"></div>
       </div>
       <div class="singleHandArea">
-        <div class="card cardtext" id="playerCard1"></div>
+        <div class="card cardtext" id="playerCard1" style="margin-top: 0px; margin-left: 0px;"></div>
         <div class="card cardtext" id="playerCard2" style="margin-top: -175px; margin-left: 50px;"></div>
         <div class="card cardtext" id="playerCard3" style="margin-top: -175px; margin-left: 100px;"></div>
         <div class="card cardtext" id="playerCard4" style="margin-top: -175px; margin-left: 150px;"></div>
@@ -218,7 +238,6 @@
       <!-- Actions -->
       <div class="row">
         <div class="col centered">
-          <button type="button" class="btn btn-success" id ="slideInButton" onclick="addCard()">Add Card</button>
           <button type="button" class="btn btn-success" id ="surrenderButton" onclick="cardActionSurrender()" disabled>Surrender</button>
           <button type="button" class="btn btn-success" id ="doubleButton" onclick="cardActionDouble()" disabled>Double</button>
           <button type="button" class="btn btn-success" id ="splitButton" onclick="cardActionSplit()" disabled>Split</button>

@@ -11,6 +11,18 @@ class HandUiManager {
     this.numCards = 0;
   }
 
+  resetUiTracker() {
+    this.currPositionList = [];
+    this.endPositionList = [];
+    this.positionIncrementList = [];
+
+    this.currOpacityList = [];
+    this.endOpacityList = [];
+    this.opacityIncrementList = [];
+
+    this.numCards = 0;
+  }
+
   addCard(currPosition, endPosition, positionIncrement, currOpacity, endOpacity, opacityIncrement) {
     this.currPositionList.push(currPosition);
     this.endPositionList.push(endPosition);
@@ -20,6 +32,7 @@ class HandUiManager {
     this.opacityIncrementList.push(opacityIncrement);
 
     this.numCards += 1;
+    return this.numCards;
   }
 
   getNextPositionList() {
@@ -38,6 +51,16 @@ class HandUiManager {
       }
     }
     return this.currOpacityList;
+  }
+
+  getFinalPositionList() {
+    this.currPositionList = this.endPositionList;
+    return this.currPositionList;
+  }
+
+  getFinalOpacityList() {
+    this.currOpacityList = this.endOpacityList;
+    return this.getFinalOpacityList;
   }
 
   doneAnimating() {
