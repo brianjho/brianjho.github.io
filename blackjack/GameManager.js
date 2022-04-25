@@ -161,16 +161,16 @@ class GameManager {
     var playerScore = this.bestHandValue(this.playerHand);
     var dealerScore = this.bestHandValue(this.dealerHand);
     if (playerScore > 21) {
-      this.outcome = "Player bust. Dealer wins.";
+      this.outcome = "You bust. Dealer wins.";
     } else if (dealerScore <= 21 && dealerScore > playerScore) {
       this.outcome = "Dealer wins.";
     } else if (dealerScore > 21) {
-      this.outcome = "Dealer bust. Player wins!";
+      this.outcome = "Dealer bust. You win!";
     } else if (playerScore > dealerScore) {
-      this.outcome = "Player wins!";
+      this.outcome = "You win!";
     } else {
       this.outcome = "Push (Tie)!!";
     }
-    this.outcome += " Player: " + playerScore + ", Dealer: " + dealerScore;
+    this.outcome += " You: " + playerScore + ", Dealer: " + dealerScore;
   }
 }

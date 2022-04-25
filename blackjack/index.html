@@ -39,7 +39,7 @@
         dealerShownSecondCard = forceShowFullDealerHand;
         playerHandUiManager = new HandUiManager();
         dealerHandUiManager = new HandUiManager();
-        renderHandsAndCards();
+        renderTopText();
         clearCards();
       }
 
@@ -63,8 +63,7 @@
         dealerShownSecondCard = forceShowFullDealerHand;
         enableCardActionButtons();
         clearCards();
-        document.getElementById("playerHand").innerHTML = "?";
-        renderHandsAndCards();
+        renderTopText();
         addPlayerCard(gameManager.playerHand[0]);
         addPlayerCard(gameManager.playerHand[1]);
         addDealerCard(gameManager.dealerHand[0]);
@@ -86,20 +85,20 @@
           disableCardActionButtons();
           makeSecondDealerCardAppear();
         }
-        renderHandsAndCards();
+        renderTopText();
       }
 
       function cardActionDouble() {
         cardActionHit();
         disableCardActionButtons();
         dealerPlay();
-        renderHandsAndCards();
+        renderTopText();
       }
 
       function cardActionStand() {
         disableCardActionButtons();
         dealerPlay();
-        renderHandsAndCards();
+        renderTopText();
       }
 
       function cardActionSurrender() {
@@ -125,9 +124,7 @@
         document.getElementById("splitButton").disabled = true;
       }
 
-      function renderHandsAndCards() {
-        document.getElementById("playerHand").innerHTML = gameManager.showPlayerHand();
-        document.getElementById("dealerHand").innerHTML = gameManager.showDealerHand();
+      function renderTopText() {
         document.getElementById("remainingCards").innerHTML = gameManager.remainingCardsInShoe;
         document.getElementById("outcome").innerHTML = gameManager.outcome;
       }
@@ -149,9 +146,7 @@
           elemText.innerHTML = cardValue;
           clearInterval(id);
           id = setInterval(nextFrame, 20);
-          if (cardNum > 6) {
-            elem.hidden = false;
-          }
+          elem.hidden = false;
         } else {
           console.log("Not enough cards provided by the document to render.");
         }
@@ -175,9 +170,7 @@
           elemText.innerHTML = cardValue;
           clearInterval(id);
           id = setInterval(nextFrame, 20);
-          if (cardNum > 6) {
-            elem.hidden = false;
-          }
+          elem.hidden = false;
         } else {
           console.log("Not enough cards provided by the document to render.");
         }
@@ -188,6 +181,7 @@
         if (!forceShowFullDealerHand && dealerHandUiManager.numCards >= 2) {
           var elem = document.getElementById("dealerCard2");
           elem.style.opacity = 0;
+          elem.hidden = false;
           dealerHandUiManager.currOpacityList[1] = 0;
           clearInterval(id);
           id = setInterval(nextFrame, 20);
@@ -229,17 +223,13 @@
           if (elem) {
             elem.style.left = '100px';
             elem.style.opacity = 0;
-            if (i > 6) {
-              elem.hidden = true;
-            }
+            elem.hidden = true;
           }
           elem = document.getElementById("dealerCard" + i);
           if (elem) {
             elem.style.left = '100px';
             elem.style.opacity = 0;
-            if (i > 6) {
-              elem.hidden = true;
-            }
+            elem.hidden = true;
           }
         }
         elem = document.getElementById("dealerCardHidden");
@@ -282,17 +272,7 @@
       </div>
       <div class="row">
         <div class="col">
-          <p id="outcomeText">Outcome: <a id="outcome">?</a></p>
-        </div>
-      </div>
-      <div class="row centered">
-        <div class="col">
-          <p id="dealer">Dealer's hand: <a id="dealerHand">empty</a></p>
-        </div>
-      </div>
-      <div class="row centered">
-        <div class="col">
-          <p id="player">Your hand: <a id="playerHand">empty</a></p>
+          <p id="outcomeText">Text: <a id="outcome">?</a></p>
         </div>
       </div>
       <!-- Cards UI -->
@@ -301,13 +281,13 @@
       </div>
       <div class="row">
         <div class="col singleHandArea">
-          <div class="card" id="dealerCard1"><h5 class="card-body" id="dealerCardText1"></h5></div>
-          <div class="card bg-info mg-3" id="dealerCardHidden" style="margin-top: -175px; margin-left: 50px;"></div>
-          <div class="card" id="dealerCard2" style="margin-top: -175px; margin-left: 50px;"><h5 class="card-body" id="dealerCardText2"></h5></div>
-          <div class="card" id="dealerCard3" style="margin-top: -175px; margin-left: 100px;"><h5 class="card-body" id="dealerCardText3"></h5></div>
-          <div class="card" id="dealerCard4" style="margin-top: -175px; margin-left: 150px;"><h5 class="card-body" id="dealerCardText4"></h5></div>
-          <div class="card" id="dealerCard5" style="margin-top: -175px; margin-left: 200px;"><h5 class="card-body" id="dealerCardText5"></h5></div>
-          <div class="card" id="dealerCard6" style="margin-top: -175px; margin-left: 250px;"><h5 class="card-body" id="dealerCardText6"></h5></div>
+          <div class="card" id="dealerCard1" hidden><h5 class="card-body" id="dealerCardText1"></h5></div>
+          <div class="card bg-info mg-3" id="dealerCardHidden" style="margin-top: -175px; margin-left: 50px;" hidden></div>
+          <div class="card" id="dealerCard2" style="margin-top: -175px; margin-left: 50px;" hidden><h5 class="card-body" id="dealerCardText2"></h5></div>
+          <div class="card" id="dealerCard3" style="margin-top: -175px; margin-left: 100px;" hidden><h5 class="card-body" id="dealerCardText3"></h5></div>
+          <div class="card" id="dealerCard4" style="margin-top: -175px; margin-left: 150px;" hidden><h5 class="card-body" id="dealerCardText4"></h5></div>
+          <div class="card" id="dealerCard5" style="margin-top: -175px; margin-left: 200px;" hidden><h5 class="card-body" id="dealerCardText5"></h5></div>
+          <div class="card" id="dealerCard6" style="margin-top: -175px; margin-left: 250px;" hidden><h5 class="card-body" id="dealerCardText6"></h5></div>
           <div class="card" id="dealerCard7" style="margin-top: -175px; margin-left: 300px;" hidden><h5 class="card-body" id="dealerCardText7"></h5></div>
           <div class="card" id="dealerCard8" style="margin-top: -175px; margin-left: 350px;" hidden><h5 class="card-body" id="dealerCardText8"></h5></div>
           <div class="card" id="dealerCard9" style="margin-top: -175px; margin-left: 400px;" hidden><h5 class="card-body" id="dealerCardText9"></h5></div>
@@ -320,12 +300,12 @@
       </div>
       <div class="row">
         <div class="col singleHandArea">
-          <div class="card" id="playerCard1"><h5 class="card-body" id="playerCardText1"></h5></div>
-          <div class="card" id="playerCard2" style="margin-top: -175px; margin-left: 50px;"><h5 class="card-body" id="playerCardText2"></h5></div>
-          <div class="card" id="playerCard3" style="margin-top: -175px; margin-left: 100px;"><h5 class="card-body" id="playerCardText3"></h5></div>
-          <div class="card" id="playerCard4" style="margin-top: -175px; margin-left: 150px;"><h5 class="card-body" id="playerCardText4"></h5></div>
-          <div class="card" id="playerCard5" style="margin-top: -175px; margin-left: 200px;"><h5 class="card-body" id="playerCardText5"></h5></div>
-          <div class="card" id="playerCard6" style="margin-top: -175px; margin-left: 250px;"><h5 class="card-body" id="playerCardText6"></h5></div>
+          <div class="card" id="playerCard1" hidden><h5 class="card-body" id="playerCardText1"></h5></div>
+          <div class="card" id="playerCard2" style="margin-top: -175px; margin-left: 50px;" hidden><h5 class="card-body" id="playerCardText2"></h5></div>
+          <div class="card" id="playerCard3" style="margin-top: -175px; margin-left: 100px;" hidden><h5 class="card-body" id="playerCardText3"></h5></div>
+          <div class="card" id="playerCard4" style="margin-top: -175px; margin-left: 150px;" hidden><h5 class="card-body" id="playerCardText4"></h5></div>
+          <div class="card" id="playerCard5" style="margin-top: -175px; margin-left: 200px;" hidden><h5 class="card-body" id="playerCardText5"></h5></div>
+          <div class="card" id="playerCard6" style="margin-top: -175px; margin-left: 250px;" hidden><h5 class="card-body" id="playerCardText6"></h5></div>
           <div class="card" id="playerCard7" style="margin-top: -175px; margin-left: 300px;" hidden><h5 class="card-body" id="playerCardText7"></h5></div>
           <div class="card" id="playerCard8" style="margin-top: -175px; margin-left: 350px;" hidden><h5 class="card-body" id="playerCardText8"></h5></div>
           <div class="card" id="playerCard9" style="margin-top: -175px; margin-left: 400px;" hidden><h5 class="card-body" id="playerCardText9"></h5></div>
