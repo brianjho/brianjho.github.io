@@ -102,8 +102,9 @@
 
 .singleHandArea {
   width: 100%;
-  height: 175px;
+  height: 200px;
   position: relative;
+  overflow-x: auto;
 }
 
 .card {
@@ -111,11 +112,4 @@
   height: 175px;
   position: absolute;
   opacity: 0;
-  left: 2px;
-}
-
-.cardtext::before {
-  font-weight: bold;
-  color: navy;
-  content: "card";
 }

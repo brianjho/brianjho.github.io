@@ -134,7 +134,6 @@ class GameManager {
         numAces -= 1;
       }
     }
-    console.log("Best value of " + hand + " is " + totalValue);
     return totalValue;
   }
 
@@ -151,9 +150,10 @@ class GameManager {
 
   dealerActionPlayUntilFinish() {
     this.partialDealerHand = false;
-    while (this.bestHandValue(this.dealerHand) < 17) {
+    while (this.bestHandValue(this.dealerHand) < 100) {
       this.dealerHand.push(...this.shoeManager.draw(1));
     }
+    console.log("final dealer hand " + this.bestHandValue(this.dealerHand));
     this.setOutcome();
   }
 

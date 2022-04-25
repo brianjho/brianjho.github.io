@@ -26,15 +26,19 @@
       var minCardsBeforeShuffle = 11;
       var gameMode = "standard";
       var forceShowFullDealerHand = false;
+      var dealerShownSecondCard;
       var gameManager;
-      var handUiManager;
+      var playerHandUiManager;
+      var dealerHandUiManager;
 
       window.onload = startNewGame;
 
       function startNewGame() {
         disableCardActionButtons();
         gameManager = new GameManager(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand);
-        handUiManager = new HandUiManager();
+        dealerShownSecondCard = forceShowFullDealerHand;
+        playerHandUiManager = new HandUiManager();
+        dealerHandUiManager = new HandUiManager();
         renderHandsAndCards();
         clearCards();
       }
@@ -56,19 +60,31 @@
 
       function startNewRound() {
         gameManager.newRound();
+        dealerShownSecondCard = forceShowFullDealerHand;
         enableCardActionButtons();
         clearCards();
         document.getElementById("playerHand").innerHTML = "?";
         renderHandsAndCards();
-        addCard();
-        addCard();
+        addPlayerCard(gameManager.playerHand[0]);
+        addPlayerCard(gameManager.playerHand[1]);
+        addDealerCard(gameManager.dealerHand[0]);
+        addDealerCard(gameManager.dealerHand[1]);
+      }
+
+      function dealerPlay() {
+        gameManager.dealerActionPlayUntilFinish();
+        makeSecondDealerCardAppear();
+        for (let i = 2; i < gameManager.dealerHand.length; i++) {
+          addDealerCard(gameManager.dealerHand[i]);
+        }
       }
 
       function cardActionHit() {
         var bust = gameManager.playerActionHit();
-        addCard()
+        addPlayerCard(gameManager.playerHand[gameManager.playerHand.length - 1])
         if (bust) {
           disableCardActionButtons();
+          makeSecondDealerCardAppear();
         }
         renderHandsAndCards();
       }
@@ -76,13 +92,13 @@
       function cardActionDouble() {
         cardActionHit();
         disableCardActionButtons();
-        gameManager.dealerActionPlayUntilFinish();
+        dealerPlay();
         renderHandsAndCards();
       }
 
       function cardActionStand() {
         disableCardActionButtons();
-        gameManager.dealerActionPlayUntilFinish();
+        dealerPlay();
         renderHandsAndCards();
       }
 
@@ -116,38 +132,87 @@
         document.getElementById("outcome").innerHTML = gameManager.outcome;
       }
 
-      function clearCards() {
-
-      }
-
       // --- Cards UI ---
 
       var id = null;
-      function addCard() {
+      function addPlayerCard(cardValue) {
         var pos = 100;
         var opacity = 0;
-        var elem = document.getElementById("playerCard" + (handUiManager.numCards + 1));
+        var elem = document.getElementById("playerCard" + (playerHandUiManager.numCards + 1));
         if (elem) {
-          var cardNum = handUiManager.addCard(pos, 0, -5, opacity, 1, 0.1);
+          var cardNum = playerHandUiManager.addCard(pos, 0, -5, opacity, 1, 0.1);
           elem.style.left = pos + 'px';
           elem.style.opacity = opacity;
           elem.style.marginTop = (cardNum == 1) ? '0px' : '-175px';
           elem.style.marginLeft = ((cardNum - 1) * 50) + 'px';
+          var elemText = document.getElementById("playerCardText" + cardNum);
+          elemText.innerHTML = cardValue;
           clearInterval(id);
           id = setInterval(nextFrame, 20);
+          if (cardNum > 6) {
+            elem.hidden = false;
+          }
         } else {
           console.log("Not enough cards provided by the document to render.");
         }
       }
 
+      function addDealerCard(cardValue) {
+        var pos = 100;
+        var opacity = 0;
+        var elem = document.getElementById("dealerCard" + (dealerHandUiManager.numCards + 1));
+        if (dealerHandUiManager.numCards == 1 && !forceShowFullDealerHand) {
+          // Next card is 2, we will process logic to decide whether or not to show 2nd card
+          elem = document.getElementById("dealerCardHidden");
+        }
+        if (elem) {
+          var cardNum = dealerHandUiManager.addCard(pos, 0, -5, opacity, 1, 0.1);
+          elem.style.left = pos + 'px';
+          elem.style.opacity = opacity;
+          elem.style.marginTop = (cardNum == 1) ? '0px' : '-175px';
+          elem.style.marginLeft = ((cardNum - 1) * 50) + 'px';
+          var elemText = document.getElementById("dealerCardText" + cardNum);
+          elemText.innerHTML = cardValue;
+          clearInterval(id);
+          id = setInterval(nextFrame, 20);
+          if (cardNum > 6) {
+            elem.hidden = false;
+          }
+        } else {
+          console.log("Not enough cards provided by the document to render.");
+        }
+      }
+
+      function makeSecondDealerCardAppear() {
+        dealerShownSecondCard = true;
+        if (!forceShowFullDealerHand && dealerHandUiManager.numCards >= 2) {
+          var elem = document.getElementById("dealerCard2");
+          elem.style.opacity = 0;
+          dealerHandUiManager.currOpacityList[1] = 0;
+          clearInterval(id);
+          id = setInterval(nextFrame, 20);
+        }
+      }
+
       function nextFrame() {
-        if (handUiManager.doneAnimating()) {
+        if (playerHandUiManager.doneAnimating() && dealerHandUiManager.doneAnimating()) {
           clearInterval(id);
         } else {
-          var nextPositionList = handUiManager.getNextPositionList();
-          var nextOpacityList = handUiManager.getNextOpacityList();
-          for (let i = 1; i <= handUiManager.numCards; i++) {
+          var nextPositionList = playerHandUiManager.getNextPositionList();
+          var nextOpacityList = playerHandUiManager.getNextOpacityList();
+          for (let i = 1; i <= playerHandUiManager.numCards; i++) {
             var elem = document.getElementById("playerCard" + i);
+            elem.style.left = nextPositionList[i - 1] + 'px';
+            elem.style.opacity = nextOpacityList[i - 1];
+          }
+
+          nextPositionList = dealerHandUiManager.getNextPositionList();
+          nextOpacityList = dealerHandUiManager.getNextOpacityList();
+          for (let i = 1; i <= dealerHandUiManager.numCards; i++) {
+            var elem = document.getElementById("dealerCard" + i);
+            if (i == 2 && !forceShowFullDealerHand && !dealerShownSecondCard) {
+              elem = document.getElementById("dealerCardHidden");
+            }
             elem.style.left = nextPositionList[i - 1] + 'px';
             elem.style.opacity = nextOpacityList[i - 1];
           }
@@ -156,13 +221,31 @@
 
       function clearCards() {
         clearInterval(id);
-        handUiManager.resetUiTracker();
+        playerHandUiManager.resetUiTracker();
+        dealerHandUiManager.resetUiTracker();
+        var elem;
         for (let i = 1; i <= 11; i++) {
-          var elem = document.getElementById("playerCard" + i);
+          elem = document.getElementById("playerCard" + i);
           if (elem) {
             elem.style.left = '100px';
             elem.style.opacity = 0;
+            if (i > 6) {
+              elem.hidden = true;
+            }
           }
+          elem = document.getElementById("dealerCard" + i);
+          if (elem) {
+            elem.style.left = '100px';
+            elem.style.opacity = 0;
+            if (i > 6) {
+              elem.hidden = true;
+            }
+          }
+        }
+        elem = document.getElementById("dealerCardHidden");
+        if (elem) {
+          elem.style.left = '100px';
+          elem.style.opacity = 0;
         }
       }
     </script>
@@ -202,12 +285,6 @@
           <p id="outcomeText">Outcome: <a id="outcome">?</a></p>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <button type="button" class="btn btn-primary" id ="newRoundButton" onclick="startNewRound()">New round</button>
-          <button type="button" class="btn btn-primary" id ="newGameButton" onclick="startNewGame()">Reset game</button>
-        </div>
-      </div>
       <div class="row centered">
         <div class="col">
           <p id="dealer">Dealer's hand: <a id="dealerHand">empty</a></p>
@@ -219,25 +296,48 @@
         </div>
       </div>
       <!-- Cards UI -->
-      <div class="singleHandArea">
-        <div class="card cardtext" id="dealerCard1"></div>
+      <div class="row">
+        <h5>Dealer Hand:</h5>
       </div>
-      <div class="singleHandArea">
-        <div class="card cardtext" id="playerCard1" style="margin-top: 0px; margin-left: 0px;"></div>
-        <div class="card cardtext" id="playerCard2" style="margin-top: -175px; margin-left: 50px;"></div>
-        <div class="card cardtext" id="playerCard3" style="margin-top: -175px; margin-left: 100px;"></div>
-        <div class="card cardtext" id="playerCard4" style="margin-top: -175px; margin-left: 150px;"></div>
-        <div class="card cardtext" id="playerCard5" style="margin-top: -175px; margin-left: 200px;"></div>
-        <div class="card cardtext" id="playerCard6" style="margin-top: -175px; margin-left: 250px;"></div>
-        <div class="card cardtext" id="playerCard7" style="margin-top: -175px; margin-left: 300px;"></div>
-        <div class="card cardtext" id="playerCard8" style="margin-top: -175px; margin-left: 350px;"></div>
-        <div class="card cardtext" id="playerCard9" style="margin-top: -175px; margin-left: 400px;"></div>
-        <div class="card cardtext" id="playerCard10" style="margin-top: -175px; margin-left: 450px;"></div>
-        <div class="card cardtext" id="playerCard11" style="margin-top: -175px; margin-left: 500px;"></div>
+      <div class="row">
+        <div class="col singleHandArea">
+          <div class="card" id="dealerCard1"><h5 class="card-body" id="dealerCardText1"></h5></div>
+          <div class="card bg-info mg-3" id="dealerCardHidden" style="margin-top: -175px; margin-left: 50px;"></div>
+          <div class="card" id="dealerCard2" style="margin-top: -175px; margin-left: 50px;"><h5 class="card-body" id="dealerCardText2"></h5></div>
+          <div class="card" id="dealerCard3" style="margin-top: -175px; margin-left: 100px;"><h5 class="card-body" id="dealerCardText3"></h5></div>
+          <div class="card" id="dealerCard4" style="margin-top: -175px; margin-left: 150px;"><h5 class="card-body" id="dealerCardText4"></h5></div>
+          <div class="card" id="dealerCard5" style="margin-top: -175px; margin-left: 200px;"><h5 class="card-body" id="dealerCardText5"></h5></div>
+          <div class="card" id="dealerCard6" style="margin-top: -175px; margin-left: 250px;"><h5 class="card-body" id="dealerCardText6"></h5></div>
+          <div class="card" id="dealerCard7" style="margin-top: -175px; margin-left: 300px;" hidden><h5 class="card-body" id="dealerCardText7"></h5></div>
+          <div class="card" id="dealerCard8" style="margin-top: -175px; margin-left: 350px;" hidden><h5 class="card-body" id="dealerCardText8"></h5></div>
+          <div class="card" id="dealerCard9" style="margin-top: -175px; margin-left: 400px;" hidden><h5 class="card-body" id="dealerCardText9"></h5></div>
+          <div class="card" id="dealerCard10" style="margin-top: -175px; margin-left: 450px;" hidden><h5 class="card-body" id="dealerCardText10"></h5></div>
+          <div class="card" id="dealerCard11" style="margin-top: -175px; margin-left: 500px;" hidden><h5 class="card-body" id="dealerCardText11"></h5></div>
+        </div>
+      </div>
+      <div class="row">
+        <h5>Your Hand:</h5>
+      </div>
+      <div class="row">
+        <div class="col singleHandArea">
+          <div class="card" id="playerCard1"><h5 class="card-body" id="playerCardText1"></h5></div>
+          <div class="card" id="playerCard2" style="margin-top: -175px; margin-left: 50px;"><h5 class="card-body" id="playerCardText2"></h5></div>
+          <div class="card" id="playerCard3" style="margin-top: -175px; margin-left: 100px;"><h5 class="card-body" id="playerCardText3"></h5></div>
+          <div class="card" id="playerCard4" style="margin-top: -175px; margin-left: 150px;"><h5 class="card-body" id="playerCardText4"></h5></div>
+          <div class="card" id="playerCard5" style="margin-top: -175px; margin-left: 200px;"><h5 class="card-body" id="playerCardText5"></h5></div>
+          <div class="card" id="playerCard6" style="margin-top: -175px; margin-left: 250px;"><h5 class="card-body" id="playerCardText6"></h5></div>
+          <div class="card" id="playerCard7" style="margin-top: -175px; margin-left: 300px;" hidden><h5 class="card-body" id="playerCardText7"></h5></div>
+          <div class="card" id="playerCard8" style="margin-top: -175px; margin-left: 350px;" hidden><h5 class="card-body" id="playerCardText8"></h5></div>
+          <div class="card" id="playerCard9" style="margin-top: -175px; margin-left: 400px;" hidden><h5 class="card-body" id="playerCardText9"></h5></div>
+          <div class="card" id="playerCard10" style="margin-top: -175px; margin-left: 450px;" hidden><h5 class="card-body" id="playerCardText10"></h5></div>
+          <div class="card" id="playerCard11" style="margin-top: -175px; margin-left: 500px;" hidden><h5 class="card-body" id="playerCardText11"></h5></div>
+        </div>
       </div>
       <!-- Actions -->
       <div class="row">
         <div class="col centered">
+          <button type="button" class="btn btn-primary" id ="newGameButton" onclick="startNewGame()">Reset game</button>
+          <button type="button" class="btn btn-primary" id ="newRoundButton" onclick="startNewRound()">New round</button>
           <button type="button" class="btn btn-success" id ="surrenderButton" onclick="cardActionSurrender()" disabled>Surrender</button>
           <button type="button" class="btn btn-success" id ="doubleButton" onclick="cardActionDouble()" disabled>Double</button>
           <button type="button" class="btn btn-success" id ="splitButton" onclick="cardActionSplit()" disabled>Split</button>
