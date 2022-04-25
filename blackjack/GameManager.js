@@ -150,7 +150,7 @@ class GameManager {
 
   dealerActionPlayUntilFinish() {
     this.partialDealerHand = false;
-    while (this.bestHandValue(this.dealerHand) < 100) {
+    while (this.bestHandValue(this.dealerHand) < 17) {
       this.dealerHand.push(...this.shoeManager.draw(1));
     }
     console.log("final dealer hand " + this.bestHandValue(this.dealerHand));
