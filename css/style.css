@@ -113,3 +113,8 @@
   position: absolute;
   opacity: 0;
 }
+
+.scrollingGameMode {
+  position: relative;
+  overflow-x: auto;
+}

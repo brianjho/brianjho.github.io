@@ -22,10 +22,10 @@
       var numOptimalPlays = localStorage.getItem("numOptimalPlays");
       var numTotalGames = localStorage.getItem("");
       var numDecks = 2;
-      var allowSurrender = true;
       var minCardsBeforeShuffle = 11;
       var gameMode = "standard";
       var forceShowFullDealerHand = false;
+      var playerCanSurrender = true;
       var dealerShownSecondCard;
       var gameManager;
       var playerHandUiManager;
@@ -35,27 +35,47 @@
 
       function startNewGame() {
         disableCardActionButtons();
-        gameManager = new GameManager(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand);
+        gameManager = new GameManager(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand, playerCanSurrender);
         dealerShownSecondCard = forceShowFullDealerHand;
         playerHandUiManager = new HandUiManager();
         dealerHandUiManager = new HandUiManager();
-        renderTopText();
         clearCards();
+        if (gameMode == "standard") {
+          document.getElementById("remainingCards").hidden = false;
+          document.getElementById("optimalPlays").hidden = true;
+        } else {
+          document.getElementById("remainingCards").hidden = true;
+          document.getElementById("optimalPlays").hidden = false;
+          startNewRound();
+        }
+        renderTopText();
       }
 
       function saveChanges() {
-        numDecks = getCheckedNumDecksButton();
+        numDecks = getNumDecksFromSetting();
+        gameMode = getGameModeFromSetting();
         forceShowFullDealerHand = document.getElementById("forceShowFullDealerHandCheck").checked;
         startNewGame();
       }
 
-      function getCheckedNumDecksButton() {
-        for (let i = 1; i < 9; i++) {
-          if (document.getElementById("btnradio" + i).checked) {
-            return i;
+      function getNumDecksFromSetting() {
+        var elements = document.getElementById("numDecksForm").elements;
+        for (i = 0; i < elements.length; i++) {
+          if (elements[i].checked) {
+            return i + 1;
           }
         }
         return 1;
+      }
+
+      function getGameModeFromSetting() {
+        var elements = document.getElementById("gameModeForm").elements;
+        for (i = 0; i < elements.length; i++) {
+          if (elements[i].checked) {
+            return elements[i].id;
+          }
+        }
+        return "standard";
       }
 
       function startNewRound() {
@@ -125,7 +145,7 @@
       }
 
       function renderTopText() {
-        document.getElementById("remainingCards").innerHTML = gameManager.remainingCardsInShoe;
+        document.getElementById("numRemainingCards").innerHTML = gameManager.remainingCardsInShoe;
         document.getElementById("outcome").innerHTML = gameManager.outcome;
       }
 
@@ -263,11 +283,7 @@
       <div class="row">
         <div class="col">
           <p id="optimalPlays">Number of optimal plays: <a id="numOptimalPlays">0</a></p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <p id="remainingCardsText">Remaining cards: <a id="remainingCards">?</a></p>
+            <p id="remainingCards">Remaining cards: <a id="numRemainingCards">0</a></p>
         </div>
       </div>
       <div class="row">
@@ -406,24 +422,45 @@
                   <p>Decks:</p>
                 </div>
                 <div class="col">
-                  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio1">1</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="btnradio2">2</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio3">3</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio4">4</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio5">5</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio6">6</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio7">7</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio8" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio8">8</label>
-                  </div>
+                  <form class="btn-group" role="group" aria-label="Basic radio toggle button group" id="numDecksForm">
+                    <input type="radio" class="btn-check" name="btnradio" id="numDecks1" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="numDecks1">1</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="numDecks2" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="numDecks2">2</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="numDecks3" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="numDecks3">3</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="numDecks4" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="numDecks4">4</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="numDecks5" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="numDecks5">5</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="numDecks6" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="numDecks6">6</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="numDecks7" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="numDecks7">7</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="numDecks8" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="numDecks8">8</label>
+                  </form>
+                </div>
+              </div>
+              <div class="row scrollingGameMode">
+                <div class="col">
+                  <p>Game mode:</p>
+                </div>
+                <div class="col">
+                  <form class="btn-group" role="group" aria-label="Basic radio toggle button group" id="gameModeForm">
+                    <input type="radio" class="btn-check" name="btnradio" id="standard" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="standard">Standard</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="practiceFull" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="practiceFull">Full practice</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="practiceSurrenders" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="practiceSurrenders">Surrender practice</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="practiceSplits" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="practiceSplits">Split practice</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="practiceSoftTotals" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="practiceSoftTotals">Soft totals practice</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="practiceHardTotals" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="practiceHardTotals">Hard totals practice</label>
+                  </form>
                 </div>
               </div>
             </div>

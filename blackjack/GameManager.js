@@ -61,6 +61,54 @@ class ShoeManager {
       .map(({ value }) => value);
   }
 
+  drawForPlayer(numCards) {
+    var randomCard;
+    switch (this.gameMode) {
+      case "practiceSurrenders":
+        randomCard = new Card(getRandomInt(4, 14));
+        var secondCard;
+        if (randomCard.value == 4) {
+          secondCard = new Card(1);
+        } else if (randomCard.value == 5) {
+          secondCard = new Card(getRandomInt(11, 14));
+        } else if (randomCard.value == 6) {
+          secondCard = new Card(getRandomInt(11, 13));
+        } else {
+          secondCard = new Card(getRandomInt(15, 16) - randomCard.value);
+        }
+        return [randomCard, secondCard];
+      case "practiceSplits":
+        randomCard = new Card(getRandomInt(1, 13));
+        return [randomCard, randomCard];
+      case "practiceSoftTotals":
+        randomCard = new Card(getRandomInt(2, 13));
+        var randomAce = new Card(1);
+        return getRandomInt(0, 1) == 0 ? [randomAce, randomCard] : [randomCard, randomAce];
+      case "practiceHardTotals":
+        randomCard = new Card(getRandomInt(2, 13));
+        var randomSecondCard = new Card(getRandomInt(2, 13));
+        return [randomCard, randomSecondCard];
+      case "standard":
+      case "practiceFull":
+      default:
+        return this.draw(numCards);
+    }
+  }
+
+  drawForDealer(numCards) {
+    switch (this.gameMode) {
+      case "practiceSurrenders":
+      case "practiceSplits":
+      case "practiceSoftTotals":
+      case "practiceHardTotals":
+        return [new Card(getRandomInt(1, 13)), new Card(getRandomInt(1, 13))];
+      case "standard":
+      case "practiceFull":
+      default:
+        return this.draw(numCards);
+    }
+  }
+
   draw(numCards) {
     if (this.shoe.length < numCards) {
       console.log("Not enough cards. Making new shoe.");
@@ -72,11 +120,12 @@ class ShoeManager {
 
 class GameManager {
 
-  constructor(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand) {
+  constructor(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand, playerCanSurrender) {
     this.gameMode = gameMode;
     this.numDecks = numDecks;
     this.minCardsBeforeShuffle = minCardsBeforeShuffle;
     this.forceShowFullDealerHand = forceShowFullDealerHand;
+    this.playerCanSurrender = playerCanSurrender;
 
     this.playerHand = [];
     this.dealerHand = [];
@@ -95,8 +144,8 @@ class GameManager {
       console.log("Shoe too small. Making new shoe.");
       this.shoeManager.newShoe();
     }
-    this.playerHand = this.shoeManager.draw(2);
-    this.dealerHand = this.shoeManager.draw(2);
+    this.playerHand = this.shoeManager.drawForPlayer(2);
+    this.dealerHand = this.shoeManager.drawForDealer(2);
     console.log("Player hand: " + this.playerHand);
     console.log("Dealer hand: " + this.dealerHand);
     this.partialDealerHand = true;
@@ -173,4 +222,47 @@ class GameManager {
     }
     this.outcome += " You: " + playerScore + ", Dealer: " + dealerScore;
   }
+
+  getOptimalPlayerAction() {
+    var dealerFaceUpCardValue = this.dealerHand[0].value;
+    var bestHandValue = this.bestHandValue(this.playerHand);
+    // Surrenders
+    if (this.playerCanSurrender && this.playerHand.length == 2) {
+      if (bestHandValue == 16 && [9, 10, 11].includes(dealerFaceUpCardValue)) {
+        return "surrender";
+      }
+      if (bestHandValue == 15 && dealerFaceUpCardValue == 10) {
+        return "surrender";
+      }
+    }
+    if (this.playerHand.length == 2 && this.playerHand[0].value == this.playerHand[1].value) {
+      switch (this.playerHand[0].value) {
+        case 11:
+          return "split";
+        case 10:
+          return "stand";
+        case 9:
+          return [2, 3, 4, 5, 6, 8, 9].includes(dealerFaceUpCardValue) ? "split" : "stand";
+        case 8:
+          return "split";
+        case 6:
+          return [2, 3, 4, 5, 6].includes(dealerFaceUpCardValue) ? "split" : "hit";
+        case 5:
+          return [2, 3, 4, 5, 6, 7, 8, 9].includes(dealerFaceUpCardValue) ? "double" : "hit";
+        case 4:
+          return [5, 6].includes(dealerFaceUpCardValue) ? "split" : "hit";
+        case 7:
+        case 3:
+        case 2:
+          return [2, 3, 4, 5, 6, 7].includes(dealerFaceUpCardValue) ? "split" : "hit";
+        default:
+          return "invalid";
+      }
+    }
+    return "something else";
+  }
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
