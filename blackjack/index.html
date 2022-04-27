@@ -34,6 +34,7 @@
       window.onload = startNewGame;
 
       function startNewGame() {
+        hideGameConclusion();
         disableCardActionButtons();
         gameManager = new GameManager(gameMode, numDecks, minCardsBeforeShuffle, forceShowFullDealerHand, playerCanSurrender);
         dealerShownSecondCard = forceShowFullDealerHand;
@@ -79,6 +80,7 @@
       }
 
       function startNewRound() {
+        hideGameConclusion();
         gameManager.newRound();
         dealerShownSecondCard = forceShowFullDealerHand;
         enableCardActionButtons();
@@ -104,6 +106,7 @@
         if (bust) {
           disableCardActionButtons();
           makeSecondDealerCardAppear();
+          showGameConclusion();
         }
         renderTopText();
       }
@@ -113,12 +116,14 @@
         disableCardActionButtons();
         dealerPlay();
         renderTopText();
+        showGameConclusion();
       }
 
       function cardActionStand() {
         disableCardActionButtons();
         dealerPlay();
         renderTopText();
+        showGameConclusion();
       }
 
       function cardActionSurrender() {
@@ -146,7 +151,15 @@
 
       function renderTopText() {
         document.getElementById("numRemainingCards").innerHTML = gameManager.remainingCardsInShoe;
-        document.getElementById("outcome").innerHTML = gameManager.outcome;
+      }
+
+      function showGameConclusion() {
+        document.getElementById("gameConclusion").innerHTML = gameManager.outcome;
+        document.getElementById("gameConclusion").hidden = false;
+      }
+
+      function hideGameConclusion() {
+      document.getElementById("gameConclusion").hidden = true;
       }
 
       // --- Cards UI ---
@@ -168,7 +181,7 @@
           id = setInterval(nextFrame, 5);
           elem.hidden = false;
         } else {
-          console.log("Not enough cards10 provided by the document to render.");
+          console.log("Not enough cards provided by the document to render.");
         }
       }
 
@@ -283,12 +296,7 @@
       <div class="row">
         <div class="col">
           <p id="optimalPlays">Number of optimal plays: <a id="numOptimalPlays">0</a></p>
-            <p id="remainingCards">Remaining cards: <a id="numRemainingCards">0</a></p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <p id="outcomeText">Text: <a id="outcome">?</a></p>
+          <p id="remainingCards">Remaining cards: <a id="numRemainingCards">0</a></p>
         </div>
       </div>
       <!-- Cards UI -->
@@ -331,7 +339,7 @@
       </div>
       <!-- Actions -->
       <div class="row">
-        <div class="col centered">
+        <div class="col cardActions">
           <button type="button" class="btn btn-primary" id ="newGameButton" onclick="startNewGame()">Reset game</button>
           <button type="button" class="btn btn-primary" id ="newRoundButton" onclick="startNewRound()">New round</button>
           <button type="button" class="btn btn-success" id ="surrenderButton" onclick="cardActionSurrender()" disabled>Surrender</button>
@@ -339,6 +347,12 @@
           <button type="button" class="btn btn-success" id ="splitButton" onclick="cardActionSplit()" disabled>Split</button>
           <button type="button" class="btn btn-success" id ="hitButton" onclick="cardActionHit()" disabled>Hit</button>
           <button type="button" class="btn btn-success" id ="standButton" onclick="cardActionStand()" disabled>Stand</button>
+        </div>
+      </div>
+      <!-- Game Conclusion Text -->
+      <div class="row">
+        <div class="col">
+          <div class="gameConclusionCard fade-in-image" id="gameConclusion" hidden>You Win!</div>
         </div>
       </div>
       <!-- Modals -->
