@@ -135,17 +135,12 @@
   left: 50%;
   -ms-transform: translate(-50%, -60%);
   transform: translate(-50%, -60%);
-  font-weight: bold;
-  font-size: 28px;
-  -webkit-text-fill-color: white; /* Will override color (regardless of order) */
-  -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: black;
-   text-shadow:
-       3px 3px 0 #000,
-     -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-       1px 1px 0 #000;
+  color: black;
+  text-shadow:
+    -1px -1px 0 #999,
+    1px -1px 0 #999,
+    -1px 1px 0 #999,
+    1px 1px 0 #999;
 }
 
 .fade-in-image {
